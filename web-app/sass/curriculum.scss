@@ -1,0 +1,57 @@
+// Global Foundation Settings
+@import "settings";
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+.top-bar .name h1 {
+  font-size: emCalc(21);
+}
+
+.section-container.accordion section .title a {
+  font-size: emCalc(19);
+  padding: emCalc(5) emCalc(10);
+}
+
+.curriculum {
+  .global-operations,
+  .pager {
+    text-align: center;
+  }
+}
+
+@media #{$small} {
+  .curriculum .global-operations {
+    text-align: left;
+  }
+  .curriculum .pager {
+    text-align: right;
+  }
+}
+
+.split.button {
+  padding-right: 3em;
+}
+
+td.operations,
+th.operations {
+  text-align: center;
+}
+
+th a {
+  color: $table-head-font-color;
+}
+
+/* Fixing foundation bug: https://github.com/zurb/foundation/issues/2127 */
+textarea {
+  height: auto
+}
+
+.side-nav a.active {
+  font-weight: bold;
+}

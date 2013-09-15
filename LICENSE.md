@@ -1,0 +1,1 @@
+CURRICULUM project is free to use for any purpose.

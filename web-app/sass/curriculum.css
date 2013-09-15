@@ -1,0 +1,39 @@
+html {
+  height: 100%; }
+
+body {
+  min-height: 100%; }
+
+.top-bar .name h1 {
+  font-size: 1.3125em; }
+
+.section-container.accordion section .title a {
+  font-size: 1.1875em;
+  padding: 0.3125em 0.625em; }
+
+.curriculum .global-operations,
+.curriculum .pager {
+  text-align: center; }
+
+@media only screen and (min-width: 768px) {
+  .curriculum .global-operations {
+    text-align: left; }
+
+  .curriculum .pager {
+    text-align: right; } }
+.split.button {
+  padding-right: 3em; }
+
+td.operations,
+th.operations {
+  text-align: center; }
+
+th a {
+  color: #222222; }
+
+/* Fixing foundation bug: https://github.com/zurb/foundation/issues/2127 */
+textarea {
+  height: auto; }
+
+.side-nav a.active {
+  font-weight: bold; }

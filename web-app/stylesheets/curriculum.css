@@ -1,0 +1,61 @@
+/* line 4, ../sass/curriculum.scss */
+html {
+  height: 100%;
+}
+
+/* line 8, ../sass/curriculum.scss */
+body {
+  min-height: 100%;
+}
+
+/* line 12, ../sass/curriculum.scss */
+.top-bar .name h1 {
+  font-size: 1.3125em;
+}
+
+/* line 16, ../sass/curriculum.scss */
+.section-container.accordion section .title a {
+  font-size: 1.1875em;
+  padding: 0.3125em 0.625em;
+}
+
+/* line 23, ../sass/curriculum.scss */
+.curriculum .global-operations,
+.curriculum .pager {
+  text-align: center;
+}
+
+@media only screen and (min-width: 768px) {
+  /* line 29, ../sass/curriculum.scss */
+  .curriculum .global-operations {
+    text-align: left;
+  }
+
+  /* line 32, ../sass/curriculum.scss */
+  .curriculum .pager {
+    text-align: right;
+  }
+}
+/* line 37, ../sass/curriculum.scss */
+.split.button {
+  padding-right: 3em;
+}
+
+/* line 42, ../sass/curriculum.scss */
+td.operations,
+th.operations {
+  text-align: center;
+}
+
+/* line 46, ../sass/curriculum.scss */
+th a {
+  color: #222222;
+}
+
+textarea {
+  height: auto
+}
+
+.side-nav a.active {
+  font-weight: bold;
+}
