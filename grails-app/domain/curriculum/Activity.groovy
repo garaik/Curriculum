@@ -5,18 +5,21 @@ package curriculum
  */
 class Activity {
     String name
-    SortedSet subactivities
+   // SortedSet subactivities
+    Grade grade
 
-    static hasMany = [ grades : Grade, subactivities : Subactivity ]
+    static hasMany = [ subactivities : Subactivity ]
     static belongsTo = Grade
 
     static constraints = {
-        name(nullable: false, blank: false)
+        name(nullable: false, blank: false, unique: true)
     }
 
     static mapping = {
         subactivities(cascade: "all")
     }
+
+    static searchable = true
 
     String toString() {
         name

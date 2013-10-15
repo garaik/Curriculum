@@ -1,63 +1,99 @@
 package curriculum
 
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataIntegrityViolationException
 
 class ActivityController {
     private static def log = LoggerFactory.getLogger(this)
 
     def index() {
-        [ items: Activity.list() ]
+        redirect(action: "list", params: params)
     }
 
-    def view(Long id) {
-        [ item: Activity.get(id) ]
+    def list(Integer max) {
+        def pagination = new Pagination(params)
+        println(pagination)
+        params.max = Math.min(max ?: 10, 100)
+        def listParams = pagination.listParams
+        println(listParams)
+        def result = [:]
+        if (pagination.filter) {
+            def hits = Activity.search(pagination.filter, listParams)
+            result.instances = hits.results
+            result.count = hits.total
+        } else {
+            result.instances = Activity.list(listParams)
+            result.count = result.instances.totalCount
+        }
+        [instances: result.instances, count: result.count, pagination: pagination]
     }
 
-    def edit(Long id) {
-        log.debug("Editing activity (id: ${id})...")
-        [ item: Activity.get(id) ]
-    }
-
-    def create(){
-        [ item : new Activity() ]
+    def create() {
+        [instance: new Activity(params)]
     }
 
     def save() {
-        log.debug("Saving activity...")
-        def item = new Activity(params)
-        item.save()
-        flash.message = "Activity has been created with id ${item.id}."
-        redirect(action: "index")
+        def i = new Activity(params)
+        if (!i.save(flush: true)) {
+            render(view: "create", model: [instance: i])
+            return
+        }
+        flash.message = message(code: 'Activity.created.message', args: [i.name])
+        redirect(action: "list")
+    }
+
+    private Activity lookUpActivity(Long id) {
+        def i = Activity.get(id)
+        if (!i) {
+            flash.message = message(code: 'Activity.not.found', args: [id])
+            flash.error = true
+            redirect(action: "list")
+        }
+        i
+    }
+
+    def edit(Long id) {
+        [instance: lookUpActivity(id)]
     }
 
     def update(Long id, Long version) {
-        log.debug("Updating activity (id: ${id}, version: ${version})...")
-        log.debug("PARAMS:")
-        params.each({ param -> log.debug("  ${param}") })
+        def i = lookUpActivity(id)
+        if (i) {
+            if (version != null) {
+                if (i.version > version) {
+                    flash.message = message(code: 'Activity.optimistic.locking.failure', args: [i.name])
+                    flash.error = true
+                    render(view: "edit", model: [instance: i])
+                    return
+                }
+            }
 
-        def item = Activity.get(id)
+            i.properties = params
 
-        log.debug("BEFORE updating params:")
-        logProperties(item)
+            if (!i.save(flush: true)) {
+                render(view: "edit", model: [instance: i])
+                return
+            }
 
-        item.properties = params
-
-        item.save()
-        log.debug("AFTER updating params:")
-        logProperties(item)
-        flash.message = "Activity has been saved."
-        redirect(action: "index", id: id)
+            flash.message = message(code: 'Activity.updated.message', args: [i.name])
+            redirect(action: "list")
+        }
     }
 
     def delete(Long id) {
-        log.debug("Deleting activity (id: ${id})...")
-        def item = Activity.get(id)
-        item.delete()
-        flash.message = "Activity with id ${item.id} has been deleted."
-        redirect(action: "index")
-    }
-
-    private static logProperties(bean) {
-        bean.properties.each({ property -> log.debug("  ${property}") })
+        def i = lookUpActivity(id)
+        if (i) {
+            try {
+                i.delete(flush: true)
+                flash.message = message(code: 'Activity.deleted.message', args: [i.name])
+                redirect(action: "list")
+            }
+            catch (DataIntegrityViolationException ignored) {
+                flash.message = message(code: 'Activity.integrity.violation', args: [i.name])
+                flash.error = true
+                log.error("Deleting activity failed (id: ${id}).")
+                render(view: "edit", model: [instance: i])
+            }
+        }
     }
 }

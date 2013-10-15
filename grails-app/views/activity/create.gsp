@@ -1,30 +1,28 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %><!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="app">
-  <title>Create new activity</title>
+    <meta name="layout" content="app">
+    <title>Tevékenység létrehozása</title>
 </head>
+
 <body>
-    <div class="column col_12 tab-content">
-        <h4>Create new activity</h4>
-    <g:form method="post">
-        <table>
-            <thead>
-            <tr>
-                <th>Property</th>
-                <th>Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Name:</td>
-                <td><g:textField name="name" size="50" value=""/></td>
-            </tr>
-            </tbody>
-        </table>
-        <g:actionSubmit action="save" value="Create" />
-    </g:form>
-    <g:link action="index">Back to list...</g:link>
+<div class="row curriculum">
+    <div class="small-12 columns">
+        <h3>Tevékenység létrehozása</h3>
     </div>
+
+    <div class="small-12 columns">
+        <form action="<g:createLink action="save"/>" id="activityCreateForm">
+            <g:render template="activity_form"/>
+            <div class="row">
+                <div class="small-12 columns">
+                    <a href="" class="button small blue radius" onclick="document.getElementById('activityCreateForm').submit();
+                    return false;">Létrehozás</a>
+                    <a href="<g:createLink action="list"/>" class="button small blue radius">Mégsem</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
