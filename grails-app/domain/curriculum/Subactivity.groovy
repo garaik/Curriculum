@@ -7,6 +7,8 @@ class Subactivity implements Comparable {
     Activity activity
     String name
 
+    static belongsTo = Activity
+
     static constraints = {
         name(nullable: false, blank: false)
     }

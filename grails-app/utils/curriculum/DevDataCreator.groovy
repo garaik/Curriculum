@@ -61,25 +61,25 @@ class DevDataCreator {
         def o4 = new Grade(name: "4. osztály").save()
         def o5 = new Grade(name: "5. osztály").save()
 
-        Activity act1 = new Activity(name : "Egyéb tevékenységek").save()
+        Activity act1 = new Activity(name : "Egyéb tevékenységek", grade : g1).save()
         act1.addToSubactivities(name : "Zehernyemetélés")
         act1.addToSubactivities(name : "Zabhegyezés")
         act1.addToSubactivities(name : "Téblábolás")
 
-        Activity act2 = new Activity(name : "Programozás").save()
+        Activity act2 = new Activity(name : "Programozás", grade : g1).save()
         act2.addToSubactivities(name : "Specifikálás")
         act2.addToSubactivities(name : "Implementálás")
         act2.addToSubactivities(name : "Tesztelés")
         act2.addToSubactivities(name : "Telepítés")
 
-        Activity act3 = new Activity(name : "Testnevelés").save()
+        Activity act3 = new Activity(name : "Testnevelés", grade : g1).save()
         act3.addToSubactivities(name : "Erősítés")
         act3.addToSubactivities(name : "Gimnasztika")
         act3.addToSubactivities(name : "Atlétika")
         act3.addToSubactivities(name : "Úszás")
 
-        Activity act4 = new Activity(name : "Olvasás, az írott szöveg megértése").save()
-        Activity act5 = new Activity(name : "Beszédkészség, szóbeli szövegek megértése, értelmezése és alkotása").save();
+        Activity act4 = new Activity(name : "Olvasás, az írott szöveg megértése", grade: g1).save()
+        Activity act5 = new Activity(name : "Beszédkészség, szóbeli szövegek megértése, értelmezése és alkotása", grade: g1).save();
         Subactivity sact51 = new Subactivity(name: "Színjátszó képesség")
         act5.addToSubactivities(sact51)
 

@@ -36,6 +36,16 @@
     <div class="row">
         <div class="large-3 small-12 columns">
             <div class="section-container accordion" data-section="accordion">
+                <section class="${params.controller == 'activity' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'activity')}"><i class="icon-flag icon-fixed-width"></i> Tevékenységek</a></p>
+
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'activity' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'activity', action: 'list')}">Összes tevékenység</a></li>
+                            <li><a class="${params.controller == 'activity' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'activity', action: 'create')}">Új tevékenység létrehozása</a></li>
+                        </ul>
+                    </div>
+                </section>
                 <section class="${params.controller == 'exercise' ? 'active' : ''}">
                     <p class="title" data-section-title><a href="${createLink(controller: 'exercise')}"><i class="icon-tasks icon-fixed-width"></i> Feladatok</a></p>
                     <div class="content" data-section-content>
