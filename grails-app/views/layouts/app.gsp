@@ -55,6 +55,15 @@
                         </ul>
                     </div>
                 </section>
+                <section class="${params.controller == 'difficulty' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'difficulty')}"><i class="icon-tasks icon-fixed-width"></i> Nehézségek</a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'difficulty' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'difficulty', action: 'list')}">Összes nehézség</a></li>
+                            <li><a class="${params.controller == 'difficulty' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'difficulty', action: 'create')}">Új nehézség létrehozása</a></li>
+                        </ul>
+                    </div>
+                </section>
                 <section class="${params.controller == 'user' ? 'active' : ''}">
                     <p class="title" data-section-title><a href="${createLink(controller: 'user')}"><i class="icon-group icon-fixed-width"></i> Felhasználók</a></p>
                     <div class="content" data-section-content>
