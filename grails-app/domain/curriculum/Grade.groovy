@@ -12,6 +12,8 @@ class Grade {
         name(nullable: false, blank: false)
     }
 
+    static searchable = true
+
     String toString() {
         name
     }

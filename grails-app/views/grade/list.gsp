@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta name="layout" content="app">
-    <title>Tevékenységek</title>
+    <title>Évfolyamok</title>
 </head>
 
 <body>
 <div class="row curriculum">
     <div class="small-12 columns">
-        <h3>Tevékenységek</h3>
+        <h3>Évfolyamok</h3>
     </div>
 
     <g:render template="/templates/filter"/>
@@ -17,7 +17,7 @@
         <input type='hidden' name="offset" id="pagingOffset" value="from"/>
 
         <div class="large-6 columns global-operations">
-            <g:link class="button small blue radius" action="create"><i class="icon-plus"></i> Új tevékenység</g:link>
+            <g:link class="button small blue radius" action="create"><i class="icon-plus"></i> Új évfolyam</g:link>
         </div>
 
         <div class="large-6 columns pager">
@@ -35,20 +35,18 @@
         <table style="width: 100%">
             <thead>
             <tr>
-                <th><a href="#"><i class="icon-sort-by-alphabet"></i> <g:message code="activity.name.label"/></a></th>
-                <th><g:message code="activity.grade.label"/></th>
+                <th><a href="#"><i class="icon-sort-by-alphabet"></i> <g:message code="grade.name.label"/></a></th>
                 <th class="operations">Műveletek</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${instances}" var="instance">
                 <tr>
-                    <td><i class="icon-flag"></i> ${instance.name}</td>
-                    <td><i class="icon-calendar"></i> ${instance.grade}</td>
+                    <td><i class="icon-calendar"></i> ${instance.name}</td>
                     <td class="operations">
                         <g:link action="edit" id="${instance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
                     &nbsp;
-                        <g:link action="delete" id="${instance.id}" title="Törlés" onclick="if (!confirm('Biztosan törölni szeretné a(z) ${instance.name} nevű tevékenységet?')) return false;"><i
+                        <g:link action="delete" id="${instance.id}" title="Törlés" onclick="if (!confirm('Biztosan törölni szeretné a(z) ${instance.name} nevű évfolyamot?')) return false;"><i
                                 class="icon-trash"></i></g:link>
                     </td>
                 </tr>
