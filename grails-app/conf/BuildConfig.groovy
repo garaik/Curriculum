@@ -59,6 +59,10 @@ grails.project.dependency.resolution = {
         runtime ":database-migration:1.3.2"
 
         compile ':cache:1.0.1'
-        compile ":searchable:0.6.4" 
+
+        compile ":searchable:0.6.4"
+
+        compile ":dojo:1.7.2.0"
+
     }
 }
