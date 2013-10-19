@@ -15,11 +15,13 @@
     <link rel="stylesheet" href="${resource(dir: 'stylesheets', file: 'app.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'stylesheets', file: 'curriculum.css')}" type="text/css">
     <script src="${resource(dir: 'javascripts/vendor', file: 'custom.modernizr.js')}"></script>
+    <script type="text/javascript" src="${resource(dir: 'js', file: 'oneToManyHelper.js')}"></script>
+    <dojo:header theme="soria" showSpinner="true"/>
     <g:layoutHead/>
     <r:layoutResources/>
 </head>
 
-<body>
+<body class="soria">
     <nav class="top-bar">
         <ul class="title-area">
             <li class="name">
@@ -70,6 +72,24 @@
                         <ul class="side-nav">
                             <li><a class="${params.controller == 'user' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'user', action: 'list')}">Összes felhasználó</a></li>
                             <li><a class="${params.controller == 'user' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'user', action: 'create')}">Új felhasználó létrehozása</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="${params.controller == 'capability' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'capability')}"><i class="icon-dropbox icon-fixed-width"></i> Képességfókuszok</a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'capability' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'capability', action: 'list')}">Összes képesség</a></li>
+                            <li><a class="${params.controller == 'capability' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'capability', action: 'create')}">Új képesség létrehozása</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="${params.controller == 'grade' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'grade')}"><i class="icon-dropbox icon-fixed-width"></i> Évfolyamok</a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'grade' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'grade', action: 'list')}">Összes évfolyam</a></li>
+                            <li><a class="${params.controller == 'grade' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'grade', action: 'create')}">Új évfolyam létrehozása</a></li>
                         </ul>
                     </div>
                 </section>
