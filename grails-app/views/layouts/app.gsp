@@ -48,6 +48,17 @@
                         </ul>
                     </div>
                 </section>
+                <section class="${params.controller == 'subactivity' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'subactivity')}"><i class="icon-flag-alt icon-fixed-width"></i> Al-tevékenységek</a></p>
+
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'subactivity' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'subactivity', action: 'list')}">Összes al-tevékenység</a></li>
+                            <li><a class="${params.controller == 'subactivity' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'subactivity', action: 'create')}">Új al-tevékenység létrehozása</a>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
                 <section class="${params.controller == 'exercise' ? 'active' : ''}">
                     <p class="title" data-section-title><a href="${createLink(controller: 'exercise')}"><i class="icon-tasks icon-fixed-width"></i> Feladatok</a></p>
                     <div class="content" data-section-content>
