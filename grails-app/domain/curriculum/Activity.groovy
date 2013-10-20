@@ -6,10 +6,10 @@ package curriculum
 class Activity {
     String name
    // SortedSet subactivities
-    Grade grade
+
+    List subactivities
 
     static hasMany = [ subactivities : Subactivity ]
-    static belongsTo = Grade
 
     static constraints = {
         name(nullable: false, blank: false, unique: true)

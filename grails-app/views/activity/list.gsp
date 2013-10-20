@@ -44,7 +44,7 @@
             <g:each in="${instances}" var="instance">
                 <tr>
                     <td><i class="icon-flag"></i> ${instance.name}</td>
-                    <td><i class="icon-calendar"></i> ${instance.grade}</td>
+                    <td>${instance.grade}</td>
                     <td class="operations">
                         <g:link action="edit" id="${instance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
                     &nbsp;

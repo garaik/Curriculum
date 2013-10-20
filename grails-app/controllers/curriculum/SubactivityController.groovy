@@ -1,6 +1,5 @@
 package curriculum
 
-import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 
 class SubactivityController {

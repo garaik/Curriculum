@@ -35,9 +35,9 @@
                 <thead>
                     <tr>
                         <th><a href="#"><g:message code="exercise.title.label" /></a></th>
-                        <th><a href="#"><g:message code="exercise.grade.label" /></a></th>
+                        <th><a href="#"><g:message code="exercise.gradeDetails.label" /></a></th>
                         <th><a href="#"><g:message code="exercise.activity.label" /></a></th>
-                        <th><a href="#"><g:message code="exercise.difficulty.label" /></a></th>
+                        <th><a href="#"><g:message code="gradeDetails.difficulty.label" /></a></th>
                         <th class="operations">Műveletek</th>
                     </tr>
                 </thead>
@@ -45,9 +45,9 @@
                     <g:each in="${instances}" var="instance">
                         <tr>
                             <td><i class="icon-tasks"></i> ${instance.title}</td>
-                            <td>${instance.grade}</td>
+                            <td><g:each in="${instance.gradeDetails.grade}" var="grade">${grade}</g:each></td>
                             <td>${instance.activity}</td>
-                            <td>${instance.difficulty}</td>
+                            <td><g:each in="${instance.gradeDetails.difficulty}" var="difficulty">${difficulty}</g:each></td>
                             <td class="operations">
                                 <g:link action="edit" id="${instance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
                                 &nbsp;

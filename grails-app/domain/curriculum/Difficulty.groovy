@@ -3,10 +3,9 @@ package curriculum
 class Difficulty {
     String name
 
-    static hasMany = [ exercise : Exercise ]
 
     static constraints = {
-        name(nullable: false, unique: true)
+        name(nullable: false)
     }
 
     String toString() {

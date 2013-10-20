@@ -6,13 +6,11 @@ package curriculum
 class Grade {
     String name
 
-    static hasMany = [ activities : Activity ]
+    static searchable = true
 
     static constraints = {
-        name(nullable: false, blank: false)
+        name(nullable: false, blank: false, unique: true)
     }
-
-    static searchable = true
 
     String toString() {
         name

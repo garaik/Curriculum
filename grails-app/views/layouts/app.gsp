@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
+    <dojo:header theme="soria" showSpinner="true"/>
     <title><g:layoutTitle default="CURRICULUM"/></title>
     <meta name="description" content=""/>
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,200italic,400italic,700italic&subset=latin,latin-ext'
@@ -16,7 +17,6 @@
     <link rel="stylesheet" href="${resource(dir: 'stylesheets', file: 'curriculum.css')}" type="text/css">
     <script src="${resource(dir: 'javascripts/vendor', file: 'custom.modernizr.js')}"></script>
     <script type="text/javascript" src="${resource(dir: 'js', file: 'oneToManyHelper.js')}"></script>
-    <dojo:header theme="soria" showSpinner="true"/>
     <g:layoutHead/>
     <r:layoutResources/>
 </head>
@@ -38,17 +38,6 @@
     <div class="row">
         <div class="large-3 small-12 columns">
             <div class="section-container accordion" data-section="accordion">
-                <section class="${params.controller == 'grade' ? 'active' : ''}">
-                    <p class="title" data-section-title><a href="${createLink(controller: 'grade')}"><i class="icon-calendar icon-fixed-width"></i> Évfolyamok</a></p>
-
-                    <div class="content" data-section-content>
-                        <ul class="side-nav">
-                            <li><a class="${params.controller == 'grade' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'grade', action: 'list')}">Összes évfolyam</a></li>
-                            <li><a class="${params.controller == 'grade' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'grade', action: 'create')}">Új évfolyam létrehozása</a>
-                            </li>
-                        </ul>
-                    </div>
-                </section>
                 <section class="${params.controller == 'activity' ? 'active' : ''}">
                     <p class="title" data-section-title><a href="${createLink(controller: 'activity')}"><i class="icon-flag icon-fixed-width"></i> Tevékenységek</a></p>
 
@@ -56,17 +45,6 @@
                         <ul class="side-nav">
                             <li><a class="${params.controller == 'activity' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'activity', action: 'list')}">Összes tevékenység</a></li>
                             <li><a class="${params.controller == 'activity' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'activity', action: 'create')}">Új tevékenység létrehozása</a></li>
-                        </ul>
-                    </div>
-                </section>
-                <section class="${params.controller == 'subactivity' ? 'active' : ''}">
-                    <p class="title" data-section-title><a href="${createLink(controller: 'subactivity')}"><i class="icon-flag-alt icon-fixed-width"></i> Al-tevékenységek</a></p>
-
-                    <div class="content" data-section-content>
-                        <ul class="side-nav">
-                            <li><a class="${params.controller == 'subactivity' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'subactivity', action: 'list')}">Összes al-tevékenység</a></li>
-                            <li><a class="${params.controller == 'subactivity' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'subactivity', action: 'create')}">Új al-tevékenység létrehozása</a>
-                            </li>
                         </ul>
                     </div>
                 </section>

@@ -4,6 +4,8 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class GradeController {
 
+    static allowedMethods = [ update: "POST", delete: "POST"]
+
     def index() {
         redirect(action: "list", params: params)
     }
@@ -19,7 +21,8 @@ class GradeController {
             def hits = Grade.search(pagination.filter, listParams)
             result.instances = hits.results
             result.count = hits.total
-        } else {
+        }
+        else {
             result.instances = Grade.list(listParams)
             result.count = result.instances.totalCount
         }
@@ -79,7 +82,7 @@ class GradeController {
     }
 
     def delete(Long id) {
-        def i = lookUpGrade(id)
+        def i = lookUpName(id)
         if (i) {
             try {
                 i.delete(flush: true)

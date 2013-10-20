@@ -4,16 +4,14 @@ package curriculum
  * Subordinates of {@link Activity}. Its purpose is to fine tune exercise categories.
  */
 class Subactivity implements Comparable {
-    String name
     Activity activity
+    String name
 
     static belongsTo = Activity
 
     static constraints = {
-        name(nullable: false, blank: false, unique: true)
+        name(nullable: false, blank: false)
     }
-
-    static searchable = true
 
     String toString() {
         name

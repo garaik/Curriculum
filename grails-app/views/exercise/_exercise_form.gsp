@@ -1,26 +1,43 @@
 <%@ page import="curriculum.*" %>
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'gradeDetails', 'error')} ">
+    <%-- PLUSS GOMB --%>
+    <label for="gradeDetails">
+        <g:message code="exercise.gradeDetails.label" default="GradeDetails"/>
+    </label>
+    <%-- ajax link to add new entries --%>
+    <input type="button" rel="nofollow" class="actionButton" href="javascript:void(0)"
+           onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'addGradeDetails')}')"
+           value="${message(code: 'default.addNew.label', default: ' + ')}"/>
+    <%-- PLUSS GOMB --%>
+    <%-- GRADEDETAILS FIELDS --%>
+    <g:each in="${instance?.gradeDetails ?}" var="graded" status="i">
+        <div>
+            <%-- set the domain reference that it can be mapped by the controller --%>
+            <g:set var="domainReference" value="gradeDetails[${i}]."/>
+            <%-- ajax link to remove entries --%>
+            <%-- MINUS GOMB --%>
+            <input type="button" class="actionButton"
+                   onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'removeGradeDetails', params:[removeIx: i])}')"
+                   value="${message(code: 'default.addNew.label', default: ' - ')}"/>
+            <%-- MINUS GOMB --%>
+            <g:hiddenField name="gradeDetails[${i}].id" value="${graded?.id}"/>
+
+            <g:render template="/gradeDetails/form" model="[gradeDetailsInstance: graded]"/>
+        </div>
+    </g:each>
+    <%-- GRADEDETAILS FIELDS --%>
+
+<%-- to restore the state of the form after ajax post/response --%>
+    <g:hiddenField name="formId" value="${formId}"/>
+    <g:hiddenField name="elementToReplace" value="${elementToReplace}"/>
+
+</div>
 <div class="row">
     <div class="small-12 columns">
         <label for="exerciseTitle" class="${hasErrors(bean: instance, field: 'title', 'error')}"><g:message code="exercise.title.label" />:</label>
         <input name="title" id="exerciseTitle" type="text" value="${instance?.title}" class="${hasErrors(bean: instance, field: 'title', 'error')}">
         <g:hasErrors bean="${instance}" field="title">
             <small class="error"><g:fieldError bean="${instance}" field="title" /></small>
-        </g:hasErrors>
-    </div>
-</div>
-<div class="row">
-    <div class="large-6 columns ${hasErrors(bean: instance, field: 'grade', 'error')}">
-        <label for="exerciseGrade"><g:message code="exercise.grade.label" />:</label>
-        <g:select id="exerciseGrade" name="grade.id" from="${Grade.list()}" optionKey="id" required="" value="${instance?.grade?.id}" />
-        <g:hasErrors bean="${instance}" field="grade">
-            <small class="error"><g:fieldError bean="${instance}" field="grade" /></small>
-        </g:hasErrors>
-    </div>
-    <div class="large-6 columns ${hasErrors(bean: instance, field: 'difficulty', 'error')}">
-        <label for="exerciseDifficulty"><g:message code="exercise.difficulty.label" />:</label>
-        <g:select id="exerciseDifficulty" name="difficulty.id" from="${Difficulty.list()}" optionKey="id" required="" value="${instance?.difficulty?.id}" />
-        <g:hasErrors bean="${instance}" field="difficulty">
-            <small class="error"><g:fieldError bean="${instance}" field="difficulty" /></small>
         </g:hasErrors>
     </div>
 </div>
@@ -37,13 +54,6 @@
         <g:select id="exerciseSubactivity" name="subactivity.id" from="${Subactivity.list()}" optionKey="id" required="" value="${instance?.subactivity?.id}" noSelection="${['null':'[ Nincs megadva ]']}" />
         <g:hasErrors bean="${instance}" field="subactivity">
             <small class="error"><g:fieldError bean="${instance}" field="subactivity" /></small>
-        </g:hasErrors>
-    </div>
-    <div class="large-2 columns">
-        <label for="exerciseDuration" class="${hasErrors(bean: instance, field: 'duration', 'error')}"><g:message code="exercise.duration.label" />:</label>
-        <input name="duration" id="exerciseDuration" type="text" value="${instance?.duration}" class="${hasErrors(bean: instance, field: 'duration', 'error')}">
-        <g:hasErrors bean="${instance}" field="duration">
-            <small class="error"><g:fieldError bean="${instance}" field="duration" /></small>
         </g:hasErrors>
     </div>
 </div>

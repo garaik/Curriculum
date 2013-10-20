@@ -4,7 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class ExerciseController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [update: "POST", delete: "POST"]
 
     def index() {
         redirect(action: "list", params: params)
@@ -30,6 +30,7 @@ class ExerciseController {
     }
 
     def create() {
+        params.gradeDetails = [new GradeDetails()]
         [instance: new Exercise(params)]
     }
 
@@ -57,26 +58,32 @@ class ExerciseController {
         [instance: lookUpExercise(id)]
     }
 
-    def update(Long id, Long version) {
-        def i = lookUpExercise(id)
-        if (i) {
-            if (version != null) {
-                if (i.version > version) {
-                    flash.message = message(code: 'Exercise.optimistic.locking.failure', args: [i.id])
+    def update() {
+        def exerciseSavedInstance = lookUpExercise(params.id.toLong())
+        if (exerciseSavedInstance) {
+            if (params.version) {
+                def version = params.version.toLong()
+                if (exerciseSavedInstance.version > version) {
+                    flash.message = message(code: 'Exercise.optimistic.locking.failure', args: [exerciseSavedInstance.id])
                     flash.error = true
-                    render(view: "edit", model: [instance: i])
+                    render(view: "edit", model: [instance: exerciseSavedInstance])
                     return
                 }
             }
 
-            i.properties = params
+             // code change goes here
+            def removeList = elementsToRemoveFromList(params, "gradeDetails", new GradeDetails(), exerciseSavedInstance.gradeDetails)
+            exerciseSavedInstance.gradeDetails.removeAll(removeList)
+            // code change ends here
 
-            if (!i.save(flush: true)) {
-                render(view: "edit", model: [instance: i])
+            exerciseSavedInstance.properties = params
+
+            if (!exerciseSavedInstance.save(flush: true)) {
+                render(view: "edit", model: [instance: exerciseSavedInstance])
                 return
             }
 
-            flash.message = message(code: 'Exercise.updated.message', args: [i.id])
+            flash.message = message(code: 'Exercise.updated.message', args: [exerciseSavedInstance.id])
             redirect(action: "list")
         }
     }
@@ -96,4 +103,46 @@ class ExerciseController {
             }
         }
     }
+
+    def addGradeDetails() {
+           // add one address to the list of addresses
+           def exerciseInstance = new Exercise(params)
+           if (!exerciseInstance.gradeDetails) [
+                   exerciseInstance.gradeDetails = []
+           ]
+           exerciseInstance.gradeDetails << new GradeDetails()
+           render template: "exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
+       }
+
+       def removeGradeDetails() {
+           // remove selected address from the list of addresses
+           def exerciseInstance = new Exercise(params)
+           def removeIx = params.removeIx
+           List gradeDetailList = exerciseInstance.gradeDetails.toArray()
+           def gradeDetail = gradeDetailList.get(removeIx.toInteger())
+           exerciseInstance.gradeDetails.remove(gradeDetail)
+           render template: "exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
+       }
+
+       /**
+        * Returns a list with elements which can be removed from the referencing entity
+        * @param params - the params which include the post parameters
+        * @param domainReference - the domain referenced which we named in the _form.gsp
+        * @param instanceTemplate - the object to select the referenced objects
+        * @param listToRemoveFrom - the list where the deleted/kept/new elements are in
+        * @return
+        */
+       def List elementsToRemoveFromList(params, domainReference, instanceTemplate, listToRemoveFrom) {
+           def listParamElement = params["${domainReference}[0]"]
+           def removeList = new ArrayList(listToRemoveFrom)
+           for (int i = 1; listParamElement != null; i++) {
+               log.debug "listParamElement: ${listParamElement}"
+               def instanceElement = instanceTemplate.get(listParamElement.id);
+               log.debug "instanceElement: ${instanceElement}"
+               removeList.remove(instanceElement)
+               listParamElement = params["${domainReference}[${i}]"]
+           }
+
+           return removeList
+       }
 }

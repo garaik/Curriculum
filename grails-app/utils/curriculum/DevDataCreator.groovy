@@ -61,36 +61,27 @@ class DevDataCreator {
         def o4 = new Grade(name: "4. osztály").save()
         def o5 = new Grade(name: "5. osztály").save()
 
-        Activity act1 = new Activity(name : "Egyéb tevékenységek", grade : g1).save()
+        Activity act1 = new Activity(name : "Egyéb tevékenységek", subactivities : new ArrayList<Subactivity>()).save()
         act1.addToSubactivities(name : "Zehernyemetélés")
         act1.addToSubactivities(name : "Zabhegyezés")
         act1.addToSubactivities(name : "Téblábolás")
 
-        Activity act2 = new Activity(name : "Programozás", grade : g1).save()
+        Activity act2 = new Activity(name : "Programozás",subactivities : new ArrayList<Subactivity>()).save()
         act2.addToSubactivities(name : "Specifikálás")
         act2.addToSubactivities(name : "Implementálás")
         act2.addToSubactivities(name : "Tesztelés")
         act2.addToSubactivities(name : "Telepítés")
 
-        Activity act3 = new Activity(name : "Testnevelés", grade : g1).save()
+        Activity act3 = new Activity(name : "Testnevelés", subactivities : new ArrayList<Subactivity>()).save()
         act3.addToSubactivities(name : "Erősítés")
         act3.addToSubactivities(name : "Gimnasztika")
         act3.addToSubactivities(name : "Atlétika")
         act3.addToSubactivities(name : "Úszás")
 
-        Activity act4 = new Activity(name : "Olvasás, az írott szöveg megértése", grade: g1).save()
-        Activity act5 = new Activity(name : "Beszédkészség, szóbeli szövegek megértése, értelmezése és alkotása", grade: g1).save();
+        Activity act4 = new Activity(name : "Olvasás, az írott szöveg megértése", subactivities : new ArrayList<Subactivity>()).save()
+        Activity act5 = new Activity(name : "Beszédkészség, szóbeli szövegek megértése, értelmezése és alkotása", subactivities : new ArrayList<Subactivity>()).save();
         Subactivity sact51 = new Subactivity(name: "Színjátszó képesség")
         act5.addToSubactivities(sact51)
-
-        g1.addToActivities(act3)
-        g2.addToActivities(act2)
-        g2.addToActivities(act3)
-        g3.addToActivities(act1)
-        g3.addToActivities(act2)
-        g3.addToActivities(act3)
-        g4.addToActivities(act1)
-        g4.addToActivities(act3)
 
         new Capability(name : "Beszédkészség").save()
         new Capability(name : "Írástudás").save()
@@ -107,13 +98,13 @@ class DevDataCreator {
         new Difficulty(name: "Nagyon nehéz").save()
         new Difficulty(name: "Szinte megoldhatatlan").save()
         new Difficulty(name: "Lehetetlennel határos").save()
+       def gd1 = new GradeDetails(grade: g1, difficulty: d4, duration: 10).save()
 
-        new Exercise(
-                grade: g1,
-                activity: act1,
-                difficulty:  d4,
-                duration: 5,
-                title: "Lorem ipsum").save(failOnError: true)
+
+//        new Exercise(
+//                gradeDetails: gd1,
+//                activity: act1,
+//                title: "Lorem ipsum").save(failOnError: true)
 
         def admin = new User(login: "admin", name: "Adminisztrátor", password: "admin", email: "admin@curriculum.hu", active: true).save()
         for (userName in userNames) {

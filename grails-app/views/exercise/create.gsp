@@ -9,9 +9,16 @@
         <div class="small-12 columns">
             <h3>Feladat létrehozása</h3>
         </div>
+
         <div class="small-12 columns">
-            <form action="<g:createLink action="save" />" method="post" id="createForm" class="custom">
-                <g:render template="exercise_form" />
+        <%-- the form id to submit with the ajax link --%>
+        <g:set value="createForm" var="formId"/>
+        <%-- the element id to refresh the page wit the ajax response --%>
+        <g:set value="elementToReplace" var="elementToReplace"/>
+            <form action="<g:createLink action="save" />" method="post" id="createForm" class="custom" name="${formId}">
+                <fieldset class="form" id="${elementToReplace}">
+                    <g:render template="exercise_form" id="${elementToReplace}"/>
+                </fieldset>
                 <div class="row">
                     <div class="small-12 columns">
                         <a href="" class="button small blue radius" onclick="document.getElementById('createForm').submit(); return false;">Létrehozás</a>

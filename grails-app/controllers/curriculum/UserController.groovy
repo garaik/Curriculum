@@ -4,7 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class UserController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [ update: "POST", delete: "POST"]
 
     def index() {
         redirect(action: "list", params: params)
