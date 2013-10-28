@@ -6,33 +6,27 @@ package curriculum
  */
 class Exercise {
 
+    String title
+    String instruction
+    String mediaDescription
+    String methodologySuggestion
+    Activity activity
+
+    static hasMany = [ gradeDetails : GradeDetails, subactivities : Subactivity, questions: Question, capabilities: Capability, tags: Tag, mediaItems: MediaItem, exerciseQueueItem: ExerciseQueueItem ]
+
+    static mapping = {
+        gradeDetails cascade: "all-delete-orphan"
+    }
+
     static constraints = {
         activity(nullable: false)
-        subactivity(nullable: true)
+        subactivities(nullable: true)
 
         title(blank: false)
         instruction(nullable: true)
         mediaDescription(nullable: true)
-        feedback(nullable: true)
         methodologySuggestion(nullable: true)
     }
-
-    static hasMany = [ gradeDetails : GradeDetails ]
-
-    static mapping = {
-            gradeDetails cascade: "all-delete-orphan"
-        }
-
-    Activity activity
-    Subactivity subactivity
-
-    String title
-    String instruction
-    String mediaDescription
-    String feedback
-    String methodologySuggestion
-
-    List gradeDetails
 
     static searchable = true
 }
