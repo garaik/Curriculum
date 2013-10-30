@@ -7,7 +7,6 @@ package curriculum
  */
 class MultipleChoiceExercise extends Exercise {
 
-    String almaszosz
 
     static constraints = { almaszosz(nullable: false, blank: false    )}
 }
