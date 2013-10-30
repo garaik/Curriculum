@@ -36,7 +36,6 @@
             <thead>
             <tr>
                 <th><a href="#"><i class="icon-sort-by-alphabet"></i> <g:message code="activity.name.label"/></a></th>
-                <th><g:message code="activity.grade.label"/></th>
                 <th class="operations">Műveletek</th>
             </tr>
             </thead>
@@ -44,7 +43,6 @@
             <g:each in="${instances}" var="instance">
                 <tr>
                     <td><i class="icon-flag"></i> ${instance.name}</td>
-                    <td>${instance.grade}</td>
                     <td class="operations">
                         <g:link action="edit" id="${instance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
                     &nbsp;

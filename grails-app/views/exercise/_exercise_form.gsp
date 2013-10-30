@@ -1,30 +1,37 @@
 <%@ page import="curriculum.*" %>
 <div class="fieldcontain ${hasErrors(bean: instance, field: 'gradeDetails', 'error')} ">
-    <%-- PLUSS GOMB --%>
+
     <label for="gradeDetails">
         <g:message code="exercise.gradeDetails.label" default="GradeDetails"/>
     </label>
-    <%-- ajax link to add new entries --%>
-    <input type="button" rel="nofollow" class="actionButton" href="javascript:void(0)"
-           onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'addGradeDetails')}')"
-           value="${message(code: 'default.addNew.label', default: ' + ')}"/>
-    <%-- PLUSS GOMB --%>
+
     <%-- GRADEDETAILS FIELDS --%>
     <g:each in="${instance?.gradeDetails ?}" var="graded" status="i">
         <div>
             <%-- set the domain reference that it can be mapped by the controller --%>
             <g:set var="domainReference" value="gradeDetails[${i}]."/>
             <%-- ajax link to remove entries --%>
-            <%-- MINUS GOMB --%>
-            <input type="button" class="actionButton"
-                   onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'removeGradeDetails', params:[removeIx: i])}')"
-                   value="${message(code: 'default.addNew.label', default: ' - ')}"/>
-            <%-- MINUS GOMB --%>
             <g:hiddenField name="gradeDetails[${i}].id" value="${graded?.id}"/>
+            <div class="row">
+                <g:render template="/gradeDetails/form" model="[gradeDetailsInstance: graded]"/>
+                <%-- MINUS GOMB --%>
+                <div class="large-2 columns" style="padding-top: 16px">
+                    <input type="button" class="button small blue radius"
+                           onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'removeGradeDetails', params:[removeIx: i])}')"
+                           value="${message(code: 'default.addNew.label', default: ' - ')}"/>
 
-            <g:render template="/gradeDetails/form" model="[gradeDetailsInstance: graded]"/>
+                </div>
+                <%-- MINUS GOMB --%>
+
+            </div>
         </div>
     </g:each>
+    <%-- PLUSS GOMB --%>
+        <%-- ajax link to add new entries --%>
+        <input type="button" rel="nofollow" class="button small blue radius" href="javascript:void(0)"
+               onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'addGradeDetails')}')"
+               value="${message(code: 'default.addNew.label', default: ' + ')}"/>
+        <%-- PLUSS GOMB --%>
     <%-- GRADEDETAILS FIELDS --%>
 
 <%-- to restore the state of the form after ajax post/response --%>
@@ -41,21 +48,8 @@
         </g:hasErrors>
     </div>
 </div>
-<div class="row">
-    <div class="large-5 columns ${hasErrors(bean: instance, field: 'activity', 'error')}">
-        <label for="exerciseActivity"><g:message code="exercise.activity.label" />:</label>
-        <g:select id="exerciseActivity" name="activity.id" from="${Activity.list()}" optionKey="id" required="" value="${instance?.activity?.id}" />
-        <g:hasErrors bean="${instance}" field="activity">
-            <small class="error"><g:fieldError bean="${instance}" field="activity" /></small>
-        </g:hasErrors>
-    </div>
-    <div class="large-5 columns ${hasErrors(bean: instance, field: 'subactivity', 'error')}">
-        <label for="exerciseSubactivity"><g:message code="exercise.subactivity.label" />:</label>
-        <g:select id="exerciseSubactivity" name="subactivity.id" from="${Subactivity.list()}" optionKey="id" required="" value="${instance?.subactivity?.id}" noSelection="${['null':'[ Nincs megadva ]']}" />
-        <g:hasErrors bean="${instance}" field="subactivity">
-            <small class="error"><g:fieldError bean="${instance}" field="subactivity" /></small>
-        </g:hasErrors>
-    </div>
+<div id="exerciseActivities">
+    <g:render template="/exercise/exercise_activities" model="['instance':instance]"/>
 </div>
 <div class="row">
     <div class="small-12 columns">

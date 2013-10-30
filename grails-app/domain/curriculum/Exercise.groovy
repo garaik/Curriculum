@@ -6,25 +6,7 @@ package curriculum
  */
 class Exercise {
 
-    static constraints = {
-        activity(nullable: false)
-        subactivity(nullable: true)
-
-        title(blank: false)
-        instruction(nullable: true)
-        mediaDescription(nullable: true)
-        feedback(nullable: true)
-        methodologySuggestion(nullable: true)
-    }
-
-    static hasMany = [ gradeDetails : GradeDetails ]
-
-    static mapping = {
-            gradeDetails cascade: "all-delete-orphan"
-        }
-
     Activity activity
-    Subactivity subactivity
 
     String title
     String instruction
@@ -35,4 +17,22 @@ class Exercise {
     List gradeDetails
 
     static searchable = true
+
+    static constraints = {
+        activity(nullable: false, blank: false    )
+        subactivities(nullable: false, blank: false, validator: {
+                	  if (it.empty) return ['entryMissing']
+                       })
+        title(blank: false)
+        instruction(nullable: true)
+        mediaDescription(nullable: true)
+        feedback(nullable: true)
+        methodologySuggestion(nullable: true)
+    }
+
+    static hasMany = [ gradeDetails : GradeDetails, subactivities : Subactivity]
+
+    static mapping = {
+            gradeDetails cascade: "all-delete-orphan"
+        }
 }

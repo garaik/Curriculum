@@ -104,6 +104,44 @@
                         </ul>
                     </div>
                 </section>
+                <section class="${params.controller == 'multipleChoiceExercise' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'multipleChoiceExercise')}"><i class="icon-tasks icon-fixed-width"></i><g:message code="multipleChoiceExercise.label"/></a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'multipleChoiceExercise' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'multipleChoiceExercise', action: 'list')}">
+                                <g:message code="multipleChoiceExercise.all.label"/></a></li>
+                            <li><a class="${params.controller == 'multipleChoiceExercise' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'multipleChoiceExercise', action: 'create')}">
+                                <g:message code="multipleChoiceExercise.new.label"/></a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="${params.controller == 'pictureMapExercise' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'pictureMapExercise')}"><i class="icon-tasks icon-fixed-width"></i><g:message code="pictureMapExercise.label"/></a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'pictureMapExercise' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'pictureMapExercise', action: 'list')}"><g:message code="pictureMapExercise.all.label"/></a></li>
+                            <li><a class="${params.controller == 'pictureMapExercise' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'pictureMapExercise', action: 'create')}"><g:message code="pictureMapExercise.new.label"/></a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="${params.controller == 'pairingExercise' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'pairingExercise')}"><i class="icon-tasks icon-fixed-width"></i><g:message code="pairingExercise.label"/></a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'pairingExercise' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'pairingExercise', action: 'list')}"><g:message code="pairingExercise.all.label"/></a></li>
+                            <li><a class="${params.controller == 'pairingExercise' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'pairingExercise', action: 'create')}"><g:message code="pairingExercise.new.label"/></a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="${params.controller == 'gapFillExercise' ? 'active' : ''}">
+                    <p class="title" data-section-title><a href="${createLink(controller: 'gapFillExercise')}"><i class="icon-tasks icon-fixed-width"></i><g:message code="gapFillExercise.label"/></a></p>
+                    <div class="content" data-section-content>
+                        <ul class="side-nav">
+                            <li><a class="${params.controller == 'gapFillExercise' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'gapFillExercise', action: 'list')}"><g:message code="gapFillExercise.all.label"/></a></li>
+                            <li><a class="${params.controller == 'gapFillExercise' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'gapFillExercise', action: 'create')}"><g:message code="gapFillExercise.new.label"/></a></li>
+                        </ul>
+                    </div>
+                </section>
             </div>
         </div>
 

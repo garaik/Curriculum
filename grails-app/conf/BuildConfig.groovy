@@ -64,5 +64,7 @@ grails.project.dependency.resolution = {
 
         compile ":dojo:1.7.2.0"
 
+        compile ":mysql-connectorj:5.1.22.1"
+
     }
 }

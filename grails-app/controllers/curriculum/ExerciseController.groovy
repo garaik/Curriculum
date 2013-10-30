@@ -4,7 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class ExerciseController {
 
-    static allowedMethods = [update: "POST", delete: "POST"]
+    static allowedMethods = [update: "POST"]
 
     def index() {
         redirect(action: "list", params: params)
@@ -55,7 +55,15 @@ class ExerciseController {
     }
 
     def edit(Long id) {
-        [instance: lookUpExercise(id)]
+        Exercise instance = lookUpExercise(id)
+        switch ( instance ) {
+        case MultipleChoiceExercise:    return render(view: "/multipleChoiceExercise/edit", model:  [instance: instance])
+        case GapFillExercise:           return render(view: "/gapFillExercise/edit", model:  [instance: instance])
+        case PictureMapExercise:        return render(view: "/pictureMapExercise/edit", model:  [instance: instance])
+        case PairingExercise:           return render(view: "/pairingExercise/edit", model:  [instance: instance])
+        default:
+         render(view: "edit", model:  [instance: instance])
+        }
     }
 
     def update() {
@@ -77,6 +85,11 @@ class ExerciseController {
             // code change ends here
 
             exerciseSavedInstance.properties = params
+
+            deleteUnusedSubactivities(exerciseSavedInstance)
+
+            //Call the form validation
+            exerciseSavedInstance.validate()
 
             if (!exerciseSavedInstance.save(flush: true)) {
                 render(view: "edit", model: [instance: exerciseSavedInstance])
@@ -104,6 +117,37 @@ class ExerciseController {
         }
     }
 
+    /**
+     * Same SubActivities have remained while user change the Activity.<br/>
+     * This method deletes this unused SubActivities.
+     * @param exerciseSavedInstance without orphan SubActivities.
+     */
+    private void deleteUnusedSubactivities(Exercise exerciseSavedInstance) {
+        for (Subactivity sub : exerciseSavedInstance?.subactivities) {
+            if (!sub.activity.equals(exerciseSavedInstance.activity)) {
+                exerciseSavedInstance.subactivities.remove(sub)
+            }
+        }
+    }
+
+    /**
+     *  Refresh the _exercise_activities template.<br/>
+     *  This method is triggered when the user change the Activity in the _exercise_form.
+     * @return renders the exercise_activities
+     */
+    def refreshSubactivityList() {
+        def instance = new Exercise()
+        if(!"null".equals(params.activity)){
+            Activity activity = Activity.get(Long.valueOf(params.activity))
+            instance.setActivity(activity)
+        }
+        render(template: "/exercise/exercise_activities", model: [instance: instance])
+    }
+
+    /**
+     * Add GradeDetails to Exercise instance
+     * @return renders the /exercise/exercise_form with new GradeDetails
+     */
     def addGradeDetails() {
            // add one address to the list of addresses
            def exerciseInstance = new Exercise(params)
@@ -111,38 +155,41 @@ class ExerciseController {
                    exerciseInstance.gradeDetails = []
            ]
            exerciseInstance.gradeDetails << new GradeDetails()
-           render template: "exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
+           render template: "/exercise/exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
        }
 
-       def removeGradeDetails() {
-           // remove selected address from the list of addresses
-           def exerciseInstance = new Exercise(params)
-           def removeIx = params.removeIx
-           List gradeDetailList = exerciseInstance.gradeDetails.toArray()
-           def gradeDetail = gradeDetailList.get(removeIx.toInteger())
-           exerciseInstance.gradeDetails.remove(gradeDetail)
-           render template: "exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
-       }
+    /**
+     * Remove GradeDetails from Exercise instance
+     * @return renders the /exercise/exercise_form without the removed GradeDetails
+     */
+    def removeGradeDetails() {
+        // remove selected address from the list of addresses
+        def exerciseInstance = new Exercise(params)
+        def removeIx = params.removeIx
+        List gradeDetailList = exerciseInstance.gradeDetails.toArray()
+        def gradeDetail = gradeDetailList.get(removeIx.toInteger())
+        exerciseInstance.gradeDetails.remove(gradeDetail)
+        render template: "/exercise/exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
+    }
 
-       /**
-        * Returns a list with elements which can be removed from the referencing entity
-        * @param params - the params which include the post parameters
-        * @param domainReference - the domain referenced which we named in the _form.gsp
-        * @param instanceTemplate - the object to select the referenced objects
-        * @param listToRemoveFrom - the list where the deleted/kept/new elements are in
-        * @return
-        */
-       def List elementsToRemoveFromList(params, domainReference, instanceTemplate, listToRemoveFrom) {
-           def listParamElement = params["${domainReference}[0]"]
-           def removeList = new ArrayList(listToRemoveFrom)
-           for (int i = 1; listParamElement != null; i++) {
-               log.debug "listParamElement: ${listParamElement}"
-               def instanceElement = instanceTemplate.get(listParamElement.id);
-               log.debug "instanceElement: ${instanceElement}"
-               removeList.remove(instanceElement)
-               listParamElement = params["${domainReference}[${i}]"]
-           }
-
-           return removeList
-       }
+    /**
+     * Returns a list with elements which can be removed from the referencing entity
+     * @param params - the params which include the post parameters
+     * @param domainReference - the domain referenced which we named in the _form.gsp
+     * @param instanceTemplate - the object to select the referenced objects
+     * @param listToRemoveFrom - the list where the deleted/kept/new elements are in
+     * @return a list with elements which can be removed from the referencing entity
+     */
+    def List elementsToRemoveFromList(params, domainReference, instanceTemplate, listToRemoveFrom) {
+        def listParamElement = params["${domainReference}[0]"]
+        def removeList = new ArrayList(listToRemoveFrom)
+        for (int i = 1; listParamElement != null; i++) {
+            log.debug "listParamElement: ${listParamElement}"
+            def instanceElement = instanceTemplate.get(listParamElement.id);
+            log.debug "instanceElement: ${instanceElement}"
+            removeList.remove(instanceElement)
+            listParamElement = params["${domainReference}[${i}]"]
+        }
+        return removeList
+    }
 }

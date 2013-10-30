@@ -15,9 +15,9 @@ class Activity {
         name(nullable: false, blank: false, unique: true)
     }
 
-    static mapping = {
-        subactivities(cascade: "all")
-    }
+//    static mapping = {
+//        subactivities(cascade: "all")
+//    }
 
     static searchable = true
 
