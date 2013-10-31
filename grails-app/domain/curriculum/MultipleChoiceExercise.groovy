@@ -7,7 +7,5 @@ package curriculum
  */
 class MultipleChoiceExercise extends Exercise {
 
-
-    static constraints = { almaszosz(nullable: false, blank: false    )}
 }
 
