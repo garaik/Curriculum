@@ -33,6 +33,13 @@ class Exercise {
     static hasMany = [ gradeDetails : GradeDetails, subactivities : Subactivity]
 
     static mapping = {
-            gradeDetails cascade: "all-delete-orphan"
-        }
+        tablePerHierarchy(false)
+        gradeDetails cascade: "all-delete-orphan"
+    }
+
+
+    @Override
+    public java.lang.String toString() {
+        return title
+    }
 }

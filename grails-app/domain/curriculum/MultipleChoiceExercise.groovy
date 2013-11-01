@@ -7,5 +7,14 @@ package curriculum
  */
 class MultipleChoiceExercise extends Exercise {
 
+    static hasMany = [questions: Question]
+    static mapping = {
+        discriminator("MunltipleChoice")
+    }
+
+//    @Override
+//    public java.lang.String toString() {
+//        return super.toString()
+//    }
 }
 

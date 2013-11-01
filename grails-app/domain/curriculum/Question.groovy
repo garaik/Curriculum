@@ -11,28 +11,24 @@ class Question {
 
     String questionText
     QuestionDisplayType questionDisplayType
-    AnswerNextQuestion previousAnswer
+    MultipleChoiceExercise exercise
 
-    static belongsTo = [Exercise]
-    static hasMany = [exercises: Exercise, answers: Answer, mediaItems: MediaItem, feedbacks: Feedback]
+    static belongsTo = [exercise: MultipleChoiceExercise]
+    static hasMany = [answers: Answer, mediaItems: MediaItem, feedbacks: Feedback, previousAnswers: AnswerNextQuestion]
 
     static constraints = {
         questionText(nullable: false)
         questionDisplayType(nullable: false)
-        previousAnswer(nullable: true, blank: true)
-        exercises(nullable: true)
+        previousAnswers(nullable: true)
         answers(nullable: true)
         mediaItems(nullable: true)
         feedbacks(nullable: true)
     }
     static mapping = {
         answers cascade: 'delete-orphan'
-        feedbacks cascade: 'delete-orphan'
+        feedbacks cascade: 'all-delete-orphan'
+        exercise cascade: 'all-delete-orphan'
+        exercise lazy: false
     }
 
-
-    @Override
-    public java.lang.String toString() {
-        return questionText
-    }
 }

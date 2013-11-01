@@ -12,5 +12,5 @@ class MediaFile {
     boolean finalVersion
     boolean isIcon
 
-    static belongsTo = [mediaItems: MediaItem]
+    static belongsTo = [mediaItem: MediaItem]
 }
