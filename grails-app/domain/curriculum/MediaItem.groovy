@@ -15,7 +15,7 @@ class MediaItem {
     static hasMany = [mediaFiles: MediaFile, exercises: Exercise, answers: Answer, feedbacks: Feedback, maps: Map, mapItems: MapItem, questions: Question]
     static belongsTo = [Exercise, Answer, Map, MapItem, Question]
     static constraints = {
-        description(nullable: false)
+        description(nullable: false, blank: false)
     }
 
     @Override

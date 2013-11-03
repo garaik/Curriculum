@@ -9,8 +9,20 @@ package curriculum
  */
 class MediaFile {
     String path
+    String extension
     boolean finalVersion
     boolean isIcon
 
     static belongsTo = [mediaItem: MediaItem]
+
+    static constraints = {
+        path nullable: false
+        extension nullable: true
+    }
+
+
+    @Override
+    public java.lang.String toString() {
+        return path
+    }
 }

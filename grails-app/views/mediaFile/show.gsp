@@ -1,72 +1,81 @@
-
-<%@ page import="curriculum.MediaFile" %>
+<%@ page contentType="text/html;charset=UTF-8" import="curriculum.MediaFile" %>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'mediaFile.label', default: 'MediaFile')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
-	</head>
-	<body>
-		<a href="#show-mediaFile" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
-			</ul>
-		</div>
-		<div id="show-mediaFile" class="content scaffold-show" role="main">
-			<h1><g:message code="default.show.label" args="[entityName]" /></h1>
-			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
-			</g:if>
-			<ol class="property-list mediaFile">
-			
-				<g:if test="${mediaFileInstance?.finalVersion}">
-				<li class="fieldcontain">
-					<span id="finalVersion-label" class="property-label"><g:message code="mediaFile.finalVersion.label" default="Final Version" /></span>
-					
-						<span class="property-value" aria-labelledby="finalVersion-label"><g:formatBoolean boolean="${mediaFileInstance?.finalVersion}" /></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${mediaFileInstance?.isIcon}">
-				<li class="fieldcontain">
-					<span id="isIcon-label" class="property-label"><g:message code="mediaFile.isIcon.label" default="Is Icon" /></span>
-					
-						<span class="property-value" aria-labelledby="isIcon-label"><g:formatBoolean boolean="${mediaFileInstance?.isIcon}" /></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${mediaFileInstance?.mediaItem}">
-				<li class="fieldcontain">
-					<span id="mediaItem-label" class="property-label"><g:message code="mediaFile.mediaItem.label" default="Media Items" /></span>
-					
-						<span class="property-value" aria-labelledby="mediaItem-label"><g:link controller="mediaItem" action="show" id="${mediaFileInstance?.mediaItem?.id}">${mediaFileInstance?.mediaItem?.encodeAsHTML()}</g:link></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${mediaFileInstance?.path}">
-				<li class="fieldcontain">
-					<span id="path-label" class="property-label"><g:message code="mediaFile.path.label" default="Path" /></span>
-					
-						<span class="property-value" aria-labelledby="path-label"><g:fieldValue bean="${mediaFileInstance}" field="path"/></span>
-					
-				</li>
-				</g:if>
-			
-			</ol>
-			<g:form>
-				<fieldset class="buttons">
-					<g:hiddenField name="id" value="${mediaFileInstance?.id}" />
-					<g:link class="edit" action="edit" id="${mediaFileInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-				</fieldset>
-			</g:form>
-		</div>
-	</body>
+<head>
+    <meta name="layout" content="app">
+    <title>Média fájl adatai</title>
+</head>
+
+<body>
+<div class="row curriculum">
+    <div class="small-12 columns">
+        <h3>Média fájl adatai</h3>
+    </div>
+    <g:if test="${flash.message}">
+        <div class="small-12 columns">
+            <p><span class="label ${flash.error ? 'alert' : 'success'} radius"><i class="${flash.error ? 'icon-exclamation' : 'icon-ok'}"></i> ${flash.message}</span></p>
+        </div>
+    </g:if>
+    <div class="small-12 columns">
+
+        <g:if test="${mediaFileInstance?.extension}">
+            <div class="row">
+                <div class="large-12 columns" style="margin-top: 10px; margin-bottom: 10px">
+                    <span id="extension-label" class="property-label"><g:message code="mediaFile.extension.label" default="Kiterjesztés"/></span>
+
+                    <span class="property-value" aria-labelledby="extension-label"><g:fieldValue bean="${mediaFileInstance}" field="extension"/></span>
+
+                </div>
+            </div>
+        </g:if>
+
+        <g:if test="${mediaFileInstance?.finalVersion}">
+            <div class="row">
+                <div class="large-12 columns" style="margin-bottom: 10px">
+                    <span id="finalVersion-label" class="property-label"><g:message code="mediaFile.finalVersion.label" default="Végső verzió"/></span>
+
+                    <span class="property-value" aria-labelledby="finalVersion-label"><g:formatBoolean boolean="${mediaFileInstance?.finalVersion}"/></span>
+
+                </div>
+            </div>
+        </g:if>
+
+        <g:if test="${mediaFileInstance?.isIcon}">
+            <div class="row">
+                <div class="large-12 columns" style="margin-bottom: 10px">
+                    <span id="isIcon-label" class="property-label"><g:message code="mediaFile.isIcon.label" default="Ikon"/></span>
+
+                    <span class="property-value" aria-labelledby="isIcon-label"><g:formatBoolean boolean="${mediaFileInstance?.isIcon}"/></span>
+
+                </div>
+            </div>
+        </g:if>
+
+        <g:if test="${mediaFileInstance?.path}">
+            <div class="row">
+                <div class="large-12 columns" style="margin-bottom: 10px">
+                    <span id="path-label" class="property-label"><g:message code="mediaFile.path.label" default="Útvonal"/></span>
+
+                    <span class="property-value" aria-labelledby="path-label"><g:fieldValue bean="${mediaFileInstance}" field="path"/></span>
+
+                </div>
+            </div>
+        </g:if>
+
+
+        <g:form>
+            <div class="row">
+                <div class="small-12 columns">
+                    <g:hiddenField name="id" value="${mediaFileInstance?.id}"/>
+                    <g:link class="button small blue radius" action="edit" id="${mediaFileInstance?.id}"><g:message code="default.button.edit.label" default="Szerkesztés"/></g:link>
+                    <g:if test="${mediaFileInstance?.id}">
+                        <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}"
+                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');"/>
+                    </g:if>
+                    <g:link controller="mediaItem" action="edit" params="[id: mediaFileInstance.mediaItem.id]" class="button small blue radius">Mégsem</g:link>
+                </div>
+            </div>
+        </g:form>
+    </div>
+</body>
 </html>

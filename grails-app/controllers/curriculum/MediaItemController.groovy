@@ -4,7 +4,22 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class MediaItemController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    def acceptableVideos
+    def acceptableImages
+    def acceptableSounds
+    def acceptableDocuments
+
+    MediaItemController() {
+        init()
+    }
+
+    def init() {
+        // Getting accessable formats for media uploading from application.properties file
+        acceptableVideos = grailsApplication.metadata['mediaAllowedVideoFormats'].tokenize(',[]')
+        acceptableImages = grailsApplication.metadata['mediaAllowedImageFormats'].tokenize(',[]')
+        acceptableSounds = grailsApplication.metadata['mediaAllowedAudioFormats'].tokenize(',[]')
+        acceptableDocuments = grailsApplication.metadata['mediaAllowedDocumentFormats'].tokenize(',[]')
+    }
 
     def index() {
         redirect(action: "list", params: params)
@@ -34,41 +49,58 @@ class MediaItemController {
             mediaItemInstance.addToFeedbacks(feedback)
             feedback.addToMediaItems(mediaItemInstance)
         }
+
+        if (!mediaItemInstance.validate()) {
+            if (mediaItemInstance.id) {
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
+                return
+            } else {
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance])
+                return
+            }
+        }
+
+        if (!mediaItemInstance.mediaFiles) {
+            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
+            render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
+            return
+        }
+
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "create", model: [mediaItemInstance: mediaItemInstance])
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), mediaItemInstance.id])
-        redirect(action: "show", id: mediaItemInstance.id)
+        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
+        redirect(action: "edit", id: mediaItemInstance.id)
     }
 
     def show(Long id) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
             return
         }
 
-        [mediaItemInstance: mediaItemInstance]
+        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def edit(Long id) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
             return
         }
 
-        [mediaItemInstance: mediaItemInstance]
+        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def update(Long id, Long version) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
             return
         }
@@ -76,8 +108,8 @@ class MediaItemController {
         if (version != null) {
             if (mediaItemInstance.version > version) {
                 mediaItemInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'mediaItem.label', default: 'MediaItem')] as Object[],
-                        "Another user has updated this MediaItem while you were editing")
+                        [message(code: 'mediaItem.label', default: 'Média elem - ')] as Object[],
+                        " - Egy másik felhasználó módosította a média elem adatait, amíg Ön szerkesztette!")
                 render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
                 return
             }
@@ -85,30 +117,36 @@ class MediaItemController {
 
         mediaItemInstance.properties = params
 
-        if (!mediaItemInstance.save(flush: true)) {
+        if (!mediaItemInstance.mediaFiles) {
+            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
             render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), mediaItemInstance.id])
+        if (!mediaItemInstance.save(flush: true)) {
+            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
+            return
+        }
+
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
         redirect(action: "show", id: mediaItemInstance.id)
     }
 
     def delete(Long id) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
             return
         }
 
         try {
             mediaItemInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaItem.label', default: 'MediaItem'), id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "show", id: id)
         }
     }
@@ -120,6 +158,18 @@ class MediaItemController {
         }else {
             mediaItemInstance = new MediaItem(params)
         }
+
+        if (!mediaItemInstance.validate()) {
+            if (mediaItemInstance.id) {
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
+                return
+            } else {
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance])
+                return
+            }
+        }
+
+        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
         if (mediaItemInstance.save(flush: true)) {
             if (!mediaItemInstance.mediaFiles) {
                 mediaItemInstance.mediaFiles = []

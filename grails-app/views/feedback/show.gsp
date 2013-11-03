@@ -1,82 +1,90 @@
-
-<%@ page import="curriculum.Feedback" %>
+<%@ page contentType="text/html;charset=UTF-8" import="curriculum.Feedback" %>
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'feedback.label', default: 'Feedback')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
+		<meta name="layout" content="app">
+        <title>Visszajelzés adatai</title>
 	</head>
 	<body>
-		<a href="#show-feedback" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
-			</ul>
-		</div>
-		<div id="show-feedback" class="content scaffold-show" role="main">
-			<h1><g:message code="default.show.label" args="[entityName]" /></h1>
+    <div class="row curriculum">
+        <div class="small-12 columns">
+            <h3>Visszajelzés adatai</h3>
+        </div>
 			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
+                <div class="small-12 columns">
+                    <p><span class="label ${flash.error ? 'alert' : 'success'} radius"><i class="${flash.error ? 'icon-exclamation' : 'icon-ok'}"></i> ${flash.message}</span></p>
+                </div>
 			</g:if>
-			<ol class="property-list feedback">
+             <div class="small-12 columns">
 			
 				<g:if test="${feedbackInstance?.answers}">
-				<li class="fieldcontain">
-					<span id="answers-label" class="property-label"><g:message code="feedback.answers.label" default="Answers" /></span>
-					
-						<g:each in="${feedbackInstance.answers}" var="a">
-						<span class="property-value" aria-labelledby="answers-label"><g:link controller="answer" action="show" id="${a.id}">${a?.encodeAsHTML()}</g:link></span>
-						</g:each>
-					
-				</li>
+                    <div class="row">
+                    <div class="large-12 columns">
+                        <span id="answers-label" class="property-label"><g:message code="feedback.answers.label" default="Válaszok" />:</span>
+                        <ul style="list-style: none">
+                            <g:each in="${feedbackInstance.answers}" var="a">
+                                <li><span class="property-value" aria-labelledby="answers-label"><g:link controller="answer" action="show" id="${a.id}">${a?.encodeAsHTML()}</g:link></span></li>
+                            </g:each>
+                        </ul>
+
+                    </div>
+                    </div>
 				</g:if>
 			
 				<g:if test="${feedbackInstance?.correct}">
-				<li class="fieldcontain">
-					<span id="correct-label" class="property-label"><g:message code="feedback.correct.label" default="Correct" /></span>
+				<div class="row">
+                <div class="large-12 columns">
+					<span id="correct-label" class="property-label"><g:message code="feedback.correct.label" default="Helyes" />:</span>
 					
 						<span class="property-value" aria-labelledby="correct-label"><g:formatBoolean boolean="${feedbackInstance?.correct}" /></span>
-					
-				</li>
+
+                </div>
+                </div>
 				</g:if>
 			
 				<g:if test="${feedbackInstance?.description}">
-				<li class="fieldcontain">
-					<span id="description-label" class="property-label"><g:message code="feedback.description.label" default="Description" /></span>
+				<div class="row">
+                <div class="large-12 columns">
+					<span id="description-label" class="property-label"><g:message code="feedback.description.label" default="Leírás" />:</span>
 					
 						<span class="property-value" aria-labelledby="description-label"><g:fieldValue bean="${feedbackInstance}" field="description"/></span>
-					
-				</li>
+
+                </div>
+                </div>
 				</g:if>
 			
 				<g:if test="${feedbackInstance?.mediaItems}">
-				<li class="fieldcontain">
-					<span id="mediaItems-label" class="property-label"><g:message code="feedback.mediaItems.label" default="Media Items" /></span>
-					
+				<div class="row">
+                <div class="large-12 columns">
+					<span id="mediaItems-label" class="property-label"><g:message code="feedback.mediaItems.label" default="Média elemek" />:</span>
+                    <ul style="list-style: none">
 						<g:each in="${feedbackInstance.mediaItems}" var="m">
-						<span class="property-value" aria-labelledby="mediaItems-label"><g:link controller="mediaItem" action="show" id="${m.id}">${m?.encodeAsHTML()}</g:link></span>
+						    <li><span class="property-value" aria-labelledby="mediaItems-label"><g:link controller="mediaItem" action="show" id="${m.id}">${m?.encodeAsHTML()}</g:link></span></li>
 						</g:each>
-					
-				</li>
+                    </ul>
+
+                </div>
+                </div>
 				</g:if>
 			
 				<g:if test="${feedbackInstance?.questions}">
-				<li class="fieldcontain">
-					<span id="questions-label" class="property-label"><g:message code="feedback.questions.label" default="Questions" /></span>
-					
+				<div class="row">
+                <div class="large-12 columns">
+					<span id="questions-label" class="property-label"><g:message code="feedback.questions.label" default="Kérdések" />:</span>
+                    <ul style="list-style: none">
 						<g:each in="${feedbackInstance.questions}" var="q">
-						<span class="property-value" aria-labelledby="questions-label"><g:link controller="question" action="show" id="${q.id}">${q?.encodeAsHTML()}</g:link></span>
+					    	<li><span class="property-value" aria-labelledby="questions-label"><g:link controller="question" action="show" id="${q.id}">${q?.encodeAsHTML()}</g:link></span></li>
 						</g:each>
-					
-				</li>
+                    </ul>
+
+                </div>
+                </div>
 				</g:if>
 			
 				<g:if test="${feedbackInstance?.systemFeedback}">
-				<li class="fieldcontain">
-					<span id="systemFeedback-label" class="property-label"><g:message code="feedback.systemFeedback.label" default="System Feedback" /></span>
+				<div class="row">
+                <div class="large-12 columns">
+					<span id="systemFeedback-label" class="property-label"><g:message code="feedback.systemFeedback.label" default="Rendszer visszajelzés" />:</span>
 					
 						<span class="property-value" aria-labelledby="systemFeedback-label"><g:formatBoolean boolean="${feedbackInstance?.systemFeedback}" /></span>
 					
@@ -85,12 +93,17 @@
 			
 			</ol>
 			<g:form>
-				<fieldset class="buttons">
+				<div class="row">
+                <div class="small-12 columns">
 					<g:hiddenField name="id" value="${feedbackInstance?.id}" />
-					<g:link class="edit" action="edit" id="${feedbackInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-				</fieldset>
+					<g:link class="button small blue radius" action="edit" id="${feedbackInstance?.id}"><g:message code="default.button.edit.label" default="Szerkesztés" /></g:link>
+                <g:if test="${feedbackInstance?.id}">
+					<g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');" />
+                    </g:if>
+                </div>
+             </div>
 			</g:form>
-		</div>
+             </div>
+    </div>
 	</body>
 </html>

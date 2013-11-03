@@ -4,8 +4,6 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class FeedbackController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-
     def index() {
         redirect(action: "list", params: params)
     }
@@ -35,14 +33,14 @@ class FeedbackController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'feedback.label', default: 'Feedback'), feedbackInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), feedbackInstance.id])
         redirect(action: "show", id: feedbackInstance.id)
     }
 
     def show(Long id) {
         def feedbackInstance = Feedback.get(id)
         if (!feedbackInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "list")
             return
         }
@@ -53,7 +51,7 @@ class FeedbackController {
     def edit(Long id) {
         def feedbackInstance = Feedback.get(id)
         if (!feedbackInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "list")
             return
         }
@@ -64,7 +62,7 @@ class FeedbackController {
     def update(Long id, Long version) {
         def feedbackInstance = Feedback.get(id)
         if (!feedbackInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "list")
             return
         }
@@ -72,8 +70,8 @@ class FeedbackController {
         if (version != null) {
             if (feedbackInstance.version > version) {
                 feedbackInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'feedback.label', default: 'Feedback')] as Object[],
-                        "Another user has updated this Feedback while you were editing")
+                        [message(code: 'feedback.label', default: 'Visszajelzés -')] as Object[],
+                        " - Egy másik felhasználó módosította a visszajelzés adatait, amíg Ön szerkesztette!")
                 render(view: "edit", model: [feedbackInstance: feedbackInstance])
                 return
             }
@@ -86,25 +84,25 @@ class FeedbackController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'feedback.label', default: 'Feedback'), feedbackInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), feedbackInstance.id])
         redirect(action: "show", id: feedbackInstance.id)
     }
 
     def delete(Long id) {
         def feedbackInstance = Feedback.get(id)
         if (!feedbackInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "list")
             return
         }
 
         try {
             feedbackInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'feedback.label', default: 'Feedback'), id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'feedback.label', default: 'Visszajelzés'), id])
             redirect(action: "show", id: id)
         }
     }
@@ -112,9 +110,9 @@ class FeedbackController {
     def addMediaItem(){
         def feedbackInstance
         if (params.id) {
-            feedbackInstance = Question.get(params.id)
+            feedbackInstance = Feedback.get(params.id)
         }else {
-            feedbackInstance = new Question(params)
+            feedbackInstance = new Feedback(params)
         }
         if (feedbackInstance.save(flush: true)) {
             if (!feedbackInstance.mediaItems) {

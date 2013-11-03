@@ -33,14 +33,14 @@ class QuestionController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'question.label', default: 'Question'), questionInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'question.label', default: 'Kérdés'), questionInstance.id])
         redirect(action: "show", id: questionInstance.id)
     }
 
     def show(Long id) {
         def questionInstance = Question.get(id)
         if (!questionInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
             redirect(action: "list")
             return
         }
@@ -51,7 +51,7 @@ class QuestionController {
     def edit(Long id) {
         def questionInstance = Question.get(id)
         if (!questionInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
             redirect(action: "list")
             return
         }
@@ -62,7 +62,7 @@ class QuestionController {
     def update(Long id, Long version) {
         def questionInstance = Question.get(id)
         if (!questionInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
             redirect(action: "list")
             return
         }
@@ -70,8 +70,8 @@ class QuestionController {
         if (version != null) {
             if (questionInstance.version > version) {
                 questionInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'question.label', default: 'Question')] as Object[],
-                        "Another user has updated this Question while you were editing")
+                        [message(code: 'question.label', default: 'Kérdés - ')] as Object[],
+                        " - Egy másik felhasználó módosította a kérdés adatait, amíg Ön szerkesztette!")
                 render(view: "edit", model: [questionInstance: questionInstance])
                 return
             }
@@ -84,25 +84,24 @@ class QuestionController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'question.label', default: 'Question'), questionInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'question.label', default: 'Kérdés'), questionInstance.id])
         redirect(action: "show", id: questionInstance.id)
     }
 
     def delete(Long id) {
         def questionInstance = Question.get(id)
+        def mceId = questionInstance.exercise.id
         if (!questionInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Question'), id])
-            redirect(action: "list")
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
             return
         }
-
         try {
             questionInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'question.label', default: 'Question'), id])
-            redirect(action: "list")
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
+            redirect(controller: "multipleChoiceExercise", action: "edit", id: mceId)
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'question.label', default: 'Question'), id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
             redirect(action: "show", id: id)
         }
     }
@@ -113,13 +112,29 @@ class QuestionController {
             questionInstance = Question.get(params.id)
         }else {
             questionInstance = new Question(params)
+            MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
+            questionInstance.setExercise(mce)
         }
+
+
+        if (!questionInstance.validate() ) {
+            if (questionInstance.id) {
+                render(view: "edit", model: [questionInstance: questionInstance])
+                return
+            } else {
+                render(view: "create", model: [questionInstance: questionInstance])
+                return
+            }
+        }
+
+        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.answers) {
                 questionInstance.answers = []
             }
             redirect(controller: "answer", action: "create", params: [questionId: questionInstance?.id])
         }
+
     }
 
     def addFeedback(){
@@ -128,7 +143,21 @@ class QuestionController {
             questionInstance = Question.get(params.id)
         }else {
             questionInstance = new Question(params)
+            MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
+            questionInstance.setExercise(mce)
         }
+
+        if (!questionInstance.validate()) {
+            if (questionInstance.id) {
+                render(view: "edit", model: [questionInstance: questionInstance])
+                return
+            } else {
+                render(view: "create", model: [questionInstance: questionInstance])
+                return
+            }
+        }
+
+        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.feedbacks) {
                 questionInstance.feedbacks = []
@@ -143,7 +172,22 @@ class QuestionController {
             questionInstance = Question.get(params.id)
         }else {
             questionInstance = new Question(params)
+            MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
+            questionInstance.setExercise(mce)
         }
+
+        if (!questionInstance.validate()) {
+            if (questionInstance.id) {
+                render(view: "edit", model: [questionInstance: questionInstance])
+                return
+            } else {
+                render(view: "create", model: [questionInstance: questionInstance])
+                return
+            }
+        }
+
+        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
+
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.mediaItems) {
                 questionInstance.mediaItems = []

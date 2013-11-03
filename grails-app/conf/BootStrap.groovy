@@ -6,7 +6,7 @@ class BootStrap {
     def init = { servletContext ->
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
-                DevDataCreator.create()
+                //DevDataCreator.create()
                 break;
         }
     }

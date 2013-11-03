@@ -120,7 +120,7 @@ class ExerciseController {
     def show(Long id) {
         def exerciseInstance = Exercise.get(id)
         if (!exerciseInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'exercise.label', default: 'Exercise'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'exercise.label', default: 'Feladat'), id])
             redirect(action: "list")
             return
         }

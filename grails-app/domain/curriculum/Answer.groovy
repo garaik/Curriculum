@@ -20,7 +20,7 @@ class Answer {
         nextQuestion cascade: "save-update"
     }
     static constraints = {
-        answerText(nullable: false)
+        answerText(nullable: false, blank: false)
         isCorrect(nullable: false)
         nextQuestion(nullable: true, blank: true)
         mediaItems(nullable: true)

@@ -18,6 +18,10 @@ class Feedback {
         questions cascade: 'delete-orphan'
     }
 
+    static constraints = {
+        description blank: false
+    }
+
     @Override
     public java.lang.String toString() {
         return description
