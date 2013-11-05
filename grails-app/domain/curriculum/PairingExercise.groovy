@@ -6,4 +6,8 @@ package curriculum
  * @since 26 10 2013
  */
 class PairingExercise extends Exercise{
+
+    static mapping = {
+        discriminator("Pairing")
+    }
 }

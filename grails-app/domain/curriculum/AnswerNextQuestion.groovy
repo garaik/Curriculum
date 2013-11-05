@@ -10,7 +10,16 @@ package curriculum
 class AnswerNextQuestion {
 
     Exercise exercise
+    Question nextQuestion
 
-    static hasOne = [nextQuestion: Question, previousAnswer: Answer]
+    static belongsTo = [nextQuestion: Question, previousAnswer: Answer]
+    static mapping = {
+        nextQuestion lazy: false
+        nextQuestion cascade: "save-update"
+    }
 
+    @Override
+    public java.lang.String toString() {
+        return nextQuestion
+    }
 }

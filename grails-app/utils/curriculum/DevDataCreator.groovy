@@ -1,13 +1,12 @@
 package curriculum
-
-import org.slf4j.LoggerFactory
-
 /**
  * <p>Creates test data for development.</p>
  * <p>Created by <a href="mailto:krisztian.garai@arvato-systems.hu">Krisztián Garai</a>.
  * <br/>Date: 2013.07.15.</p>
  */
 class DevDataCreator {
+
+/*
     private static def log = LoggerFactory.getLogger(this)
 
     private static def userNames = [
@@ -123,6 +122,7 @@ class DevDataCreator {
     private static def createRealNameFromUserName(String userName) {
         userName.collect({ it in 'A'..'Z' ? " " + it : it }).join("")
     }
+*/
 }
 
 

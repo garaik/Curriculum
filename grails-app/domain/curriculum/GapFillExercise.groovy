@@ -13,5 +13,6 @@ class GapFillExercise extends Exercise{
     }
     static mapping = {
         gapFillExerciseStrings cascade:'all-delete-orphan'
+        discriminator("GapFill")
    	}
 }

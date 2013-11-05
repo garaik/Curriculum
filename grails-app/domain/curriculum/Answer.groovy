@@ -15,8 +15,12 @@ class Answer {
 
     static hasMany = [mediaItems: MediaItem, feedbacks: Feedback]
     static belongsTo = [question: Question]
+    static mapping = {
+        nextQuestion lazy: false
+        nextQuestion cascade: "save-update"
+    }
     static constraints = {
-        answerText(nullable: false)
+        answerText(nullable: false, blank: false)
         isCorrect(nullable: false)
         nextQuestion(nullable: true, blank: true)
         mediaItems(nullable: true)

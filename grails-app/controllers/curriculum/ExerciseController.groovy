@@ -114,6 +114,17 @@ class ExerciseController {
         }
     }
 
+    def show(Long id) {
+        def exerciseInstance = Exercise.get(id)
+        if (!exerciseInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'exercise.label', default: 'Feladat'), id])
+            redirect(action: "list")
+            return
+        }
+
+        [instance: exerciseInstance]
+    }
+
     /**
      * Same SubActivities have remained while user change the Activity.<br/>
      * This method deletes this unused SubActivities.
