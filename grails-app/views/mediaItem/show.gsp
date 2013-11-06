@@ -126,29 +126,25 @@
     <g:if test="${mediaItemInstance?.mediaFiles}">
     <div class="row">
         <div class="large-12 columns" style="margin-bottom: 10px">
-            <span id="mediaFiles-label" class="property-label"><g:message code="mediaItem.mediaFiles.label" default="Media Files"/>:</span>
-
-
-
-
+            <span id="mediaFiles-label" class="property-label"><g:message code="mediaItem.mediaFiles.label" default="Média fájlok"/>:</span>
 
             <table style="width: 100%">
                 <thead>
                 <tr>
                     <th>Thumbnail</th>
 
-                    <g:sortableColumn property="extension" title="${message(code: 'mediaFile.extension.label', default: 'Extension')}"/>
+                    <g:sortableColumn property="extension" title="${message(code: 'mediaFile.extension.label', default: 'Kiterjesztés')}"/>
 
-                    <g:sortableColumn property="finalVersion" title="${message(code: 'mediaFile.finalVersion.label', default: 'Final Version')}"/>
+                    <g:sortableColumn property="finalVersion" title="${message(code: 'mediaFile.finalVersion.label', default: 'Végső verzió')}"/>
 
-                    <g:sortableColumn property="isIcon" title="${message(code: 'mediaFile.isIcon.label', default: 'Is Icon')}"/>
+                    <g:sortableColumn property="isIcon" title="${message(code: 'mediaFile.isIcon.label', default: 'Ikon')}"/>
 
-                    <g:sortableColumn property="path" title="${message(code: 'mediaFile.path.label', default: 'Path')}"/>
+                    <g:sortableColumn property="path" title="${message(code: 'mediaFile.path.label', default: 'Útvonal')}"/>
 
                 </tr>
                 </thead>
                 <tbody>
-                <g:each in="${mediaItemInstance?.mediaFiles ?}" status="i" var="mediaFileInstance">
+                <g:each in="${mediaItemInstance?.mediaFiles?.sort { it.id } ?}" status="i" var="mediaFileInstance">
                     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
                         <td>
                             <g:if test="${acceptableImages.contains(mediaFileInstance.extension)}">
@@ -165,8 +161,8 @@
                             </g:if>
                         </td>
                         <td>${fieldValue(bean: mediaFileInstance, field: "extension")}</td>
-                        <td><g:formatBoolean boolean="${mediaFileInstance.finalVersion}"/></td>
-                        <td><g:formatBoolean boolean="${mediaFileInstance.isIcon}"/></td>
+                        <td><g:formatBoolean boolean="${mediaFileInstance.finalVersion}" true="Igen" false="Nem"/></td>
+                        <td><g:formatBoolean boolean="${mediaFileInstance.isIcon}" true="Igen" false="Nem"/></td>
                         <td>${fieldValue(bean: mediaFileInstance, field: "path")}</td>
 
                     </tr>
@@ -181,7 +177,7 @@
     <g:if test="${mediaItemInstance?.questions}">
         <div class="row">
             <div class="large-12 columns" style="margin-bottom: 10px">
-                <span id="questions-label" class="property-label"><g:message code="mediaItem.questions.label" default="Questions"/>:</span>
+                <span id="questions-label" class="property-label"><g:message code="mediaItem.questions.label" default="Kérdések"/>:</span>
                 <ul style="list-style: none">
                     <g:each in="${mediaItemInstance.questions}" var="q">
                         <li><span class="property-value" aria-labelledby="questions-label"><g:link controller="question" action="show" id="${q.id}">${q?.encodeAsHTML()}</g:link></span></li>
@@ -195,10 +191,19 @@
         <div class="row">
             <div class="small-12 columns">
                 <g:hiddenField name="id" value="${mediaItemInstance?.id}"/>
-                <g:link class="button small blue radius" action="edit" id="${mediaItemInstance?.id}"><g:message code="default.button.edit.label" default="Edit"/></g:link>
+                <g:link class="button small blue radius" action="edit" params="[questionId: questionId]" id="${mediaItemInstance?.id}"><g:message code="default.button.edit.label" default="Szerkesztés"/></g:link>
                 <g:if test="${mediaItemInstance?.id}">
-                    <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+                    <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}"
+                                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');"/>
+                </g:if>
+                <g:if test="${questionId}">
+                    <g:link controller="question" action="edit" params="[id: questionId]" class="button small blue radius">Mégsem</g:link>
+                </g:if>
+                <g:if test="${feedbackId}">
+                    <g:link controller="feedback" action="edit" params="[id: feedbackId]" class="button small blue radius">Mégsem</g:link>
+                </g:if>
+                <g:if test="${answerId}">
+                    <g:link controller="answer" action="edit" params="[id: answerId]" class="button small blue radius">Mégsem</g:link>
                 </g:if>
             </div>
         </div>

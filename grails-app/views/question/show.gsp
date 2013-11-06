@@ -40,6 +40,18 @@
             </div>
         </g:if>
 
+        <g:if test="${questionInstance?.exercise}">
+            <div class="row">
+                <div class="large-12 columns" style="margin-bottom: 10px">
+                    <span id="exercise-label" class="property-label"><g:message code="question.exercise.label" default="Feladat"/>:</span>
+
+                    <span class="property-value" aria-labelledby="exercise-label"><g:link controller="multipleChoiceExercise" action="edit"
+                                                                                          id="${questionInstance?.exercise?.id}">${questionInstance?.exercise?.encodeAsHTML()}</g:link></span>
+
+                </div>
+            </div>
+        </g:if>
+
         <g:if test="${questionInstance?.previousAnswers}">
             <div class="row">
                 <div class="small-12 columns" style="margin-bottom: 10px">
@@ -49,18 +61,6 @@
                             <li><span class="property-value" aria-labelledby="previousAnswers-label"><g:link controller="answerNextQuestion" action="show" id="${p.id}">${p?.encodeAsHTML()}</g:link></span></li>
                         </g:each>
                     </ul>
-
-                </div>
-            </div>
-        </g:if>
-
-        <g:if test="${questionInstance?.exercise}">
-            <div class="row">
-                <div class="small-12 columns" style="margin-bottom: 10px">
-                    <span id="exercise-label" class="property-label"><g:message code="question.exercise.label" default="Feladat"/>:</span>
-
-                    <span class="property-value" aria-labelledby="exercise-label"><g:link controller="multipleChoiceExercise" action="edit"
-                                                                                          id="${questionInstance?.exercise?.id}">${questionInstance?.exercise?.encodeAsHTML()}</g:link></span>
 
                 </div>
             </div>
@@ -83,19 +83,6 @@
             </div>
         </g:if>
 
-        <g:if test="${questionInstance?.mediaItems}">
-            <div class="row">
-                <div class="small-12 columns" style="margin-bottom: 10px">
-                    <span id="mediaItems-label" class="property-label"><g:message code="question.mediaItems.label" default="Média Elemek"/>:</span>
-                    <ul style="list-style: none">
-                        <g:each in="${questionInstance.mediaItems}" var="m">
-                            <li><span class="property-value" aria-labelledby="mediaItems-label"><g:link controller="mediaItem" action="show" id="${m.id}">${m?.encodeAsHTML()}</g:link></span></li>
-                        </g:each>
-                    </ul>
-                </div>
-            </div>
-        </g:if>
-
         <g:if test="${questionInstance?.feedbacks}">
             <div class="row">
                 <div class="small-12 columns">
@@ -109,6 +96,63 @@
             </div>
         </g:if>
 
+        <g:if test="${questionInstance?.mediaItems}">
+        <div class="row">
+            <div class="small-12 columns">
+
+                    <label for="mediaFiles" class="${hasErrors(bean: questionInstance, field: 'mediaFiles', 'error')}">
+                        <g:message code="mediaItem.mediaFiles.label" default="Média elemek"/>
+
+                    </label>
+                    <table style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th>Thumbnail</th>
+
+                            <g:sortableColumn property="description" title="${message(code: 'mediaItem.description.label', default: 'Leírás')}"/>
+                            <g:sortableColumn property="instruction" title="${message(code: 'mediaItem.instruction.label', default: 'Instrukció')}"/>
+
+                            <th class="operations">Műveletek</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <g:each in="${questionInstance?.mediaItems?.sort { it.description } ?}" status="i" var="mediaItemInstance">
+                            <g:each in="${mediaItemInstance?.mediaFiles?.sort { it.id } ?}" status="j" var="mediaFileInstance">
+                                <g:if test="${mediaFileInstance.finalVersion}">
+                                    <g:set var="mediaFileInstanceToDisplay" value="${mediaFileInstance}"/>
+                                </g:if>
+                            </g:each>
+                            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+                                <td>
+                                    <g:if test="${acceptableImages.contains(mediaFileInstanceToDisplay?.extension)}">
+                                        <img src="${mediaFileInstanceToDisplay.path}" width="100px">
+                                    </g:if>
+                                    <g:if test="${acceptableDocuments.contains(mediaFileInstanceToDisplay?.extension)}">
+                                        <img src="${createLinkTo(dir: 'images/icons', file: 'document_image.png', absolute: true)}" alt="document_image.png" title="DOCUMENT" width="100px"/>
+                                    </g:if>
+                                    <g:if test="${acceptableVideos.contains(mediaFileInstanceToDisplay?.extension)}">
+                                        <img src="${createLinkTo(dir: 'images/icons', file: 'video_image.png', absolute: true)}" alt="video_image.png" title="VIDEO" width="100px"/>
+                                    </g:if>
+                                    <g:if test="${acceptableSounds.contains(mediaFileInstanceToDisplay?.extension)}">
+                                        <img src="${createLinkTo(dir: 'images/icons', file: 'music_image.png', absolute: true)}" alt="music_image.png" title="MUSIC" width="100px"/>
+                                    </g:if>
+                                </td>
+                                <td>${fieldValue(bean: mediaItemInstance, field: "description")}</td>
+                                <td>${fieldValue(bean: mediaItemInstance, field: "instruction")}</td>
+                                <td class="operations">
+                                    <g:link controller="mediaItem" action="edit" id="${mediaItemInstance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
+                                </td>
+
+                            </tr>
+                        </g:each>
+                        </tbody>
+                    </table>
+
+
+            </div>
+        </div>
+        </g:if>
 
 
         <g:form>

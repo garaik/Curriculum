@@ -28,7 +28,7 @@
                     <g:else>
                         <g:set var="mediaItemId" value="${mediaFileInstance?.mediaItem?.id}"></g:set>
                     </g:else>
-                    <g:link controller="mediaItem" action="edit" params="[id: mediaItemId]" class="button small blue radius">Mégsem</g:link>
+                    <g:link controller="mediaItem" action="edit" params="[id: mediaItemId, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
                 </div>
             </div>
         </g:uploadForm>

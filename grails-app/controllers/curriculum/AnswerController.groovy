@@ -6,6 +6,22 @@ class AnswerController {
 
     static allowedMethods = [create: "get", save: "POST", update: "POST", delete: "post"]
 
+    def acceptableVideos
+    def acceptableSounds
+    def acceptableImages
+    def acceptableDocuments
+
+    AnswerController() {
+        init()
+    }
+
+    def init() {
+        acceptableVideos = grailsApplication.metadata['mediaAllowedVideoFormats'].tokenize(',[]')
+        acceptableSounds = grailsApplication.metadata['mediaAllowedAudioFormats'].tokenize(',[]')
+        acceptableImages = grailsApplication.metadata['mediaAllowedImageFormats'].tokenize(',[]')
+        acceptableDocuments = grailsApplication.metadata['mediaAllowedDocumentFormats'].tokenize(',[]')
+    }
+
     def index() {
         redirect(action: "list", params: params)
     }
@@ -59,7 +75,7 @@ class AnswerController {
             return
         }
 
-        [answerInstance: answerInstance]
+        [answerInstance: answerInstance, acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
     def edit(Long id) {
@@ -70,7 +86,7 @@ class AnswerController {
             return
         }
 
-        [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByAnswerId(id)]
+        [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByAnswerId(id), acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
     def update(Long id, Long version) {
@@ -119,7 +135,7 @@ class AnswerController {
         def answerInstance = Answer.get(id)
         if (!answerInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'answer.label', default: 'Válasz'), id])
-            redirect(action: "list")
+            redirect(controller: "question", action: "edit", id: questionId)
             return
         }
 
@@ -130,7 +146,7 @@ class AnswerController {
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'answer.label', default: 'Válasz'), id])
-            redirect(action: "show", id: id)
+            redirect(controller: "question", action: "edit", id: answerInstance?.question?.id)
         }
     }
 
@@ -138,6 +154,7 @@ class AnswerController {
         def answerInstance
         if (params.id) {
             answerInstance = Answer.get(params.id)
+            answerInstance.properties = params
         }else {
             answerInstance = new Answer(params)
             Question question = Question.get(Long.parseLong(params.questionId))
@@ -154,7 +171,7 @@ class AnswerController {
             }
         }
 
-        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
+
         if (answerInstance.save(flush: true)) {
             if (!answerInstance.feedbacks) {
                 answerInstance.feedbacks = []
@@ -167,6 +184,7 @@ class AnswerController {
         def answerInstance
         if (params.id) {
             answerInstance = Answer.get(params.id)
+            answerInstance.properties = params
         }else {
             answerInstance = new Answer(params)
             Question question = Question.get(Long.parseLong(params.questionId))
@@ -183,7 +201,7 @@ class AnswerController {
             }
         }
 
-        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
+
         if (answerInstance.save(flush: true)) {
             if (!answerInstance.mediaItems) {
                 answerInstance.mediaItems = []

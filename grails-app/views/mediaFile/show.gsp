@@ -33,8 +33,7 @@
             <div class="row">
                 <div class="large-12 columns" style="margin-bottom: 10px">
                     <span id="finalVersion-label" class="property-label"><g:message code="mediaFile.finalVersion.label" default="Végső verzió"/></span>
-
-                    <span class="property-value" aria-labelledby="finalVersion-label"><g:formatBoolean boolean="${mediaFileInstance?.finalVersion}"/></span>
+                    <span class="property-value" aria-labelledby="finalVersion-label"><g:formatBoolean boolean="${mediaFileInstance?.finalVersion}" true="Igen" false="Nem"/></span>
 
                 </div>
             </div>
@@ -45,7 +44,7 @@
                 <div class="large-12 columns" style="margin-bottom: 10px">
                     <span id="isIcon-label" class="property-label"><g:message code="mediaFile.isIcon.label" default="Ikon"/></span>
 
-                    <span class="property-value" aria-labelledby="isIcon-label"><g:formatBoolean boolean="${mediaFileInstance?.isIcon}"/></span>
+                    <span class="property-value" aria-labelledby="isIcon-label"><g:formatBoolean boolean="${mediaFileInstance?.isIcon}" true="Igen" false="Nem"/></span>
 
                 </div>
             </div>
@@ -72,7 +71,7 @@
                         <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}"
                                         onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');"/>
                     </g:if>
-                    <g:link controller="mediaItem" action="edit" params="[id: mediaFileInstance.mediaItem.id]" class="button small blue radius">Mégsem</g:link>
+                    <g:link controller="mediaItem" action="edit" params="[id: mediaFileInstance.mediaItem.id, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
                 </div>
             </div>
         </g:form>

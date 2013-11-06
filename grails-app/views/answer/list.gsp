@@ -42,7 +42,7 @@
 					
 						<td><g:link action="show" id="${answerInstance.id}">${fieldValue(bean: answerInstance, field: "answerText")}</g:link></td>
 					
-						<td><g:formatBoolean boolean="${answerInstance.isCorrect}" /></td>
+						<td><g:formatBoolean boolean="${answerInstance.isCorrect}" true="Igen" false="Nem"/></td>
 					
 						<td>${fieldValue(bean: answerInstance, field: "nextQuestion")}</td>
 					
