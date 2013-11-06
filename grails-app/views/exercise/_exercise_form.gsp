@@ -1,44 +1,5 @@
 <%@ page import="curriculum.*" %>
-<div class="fieldcontain ${hasErrors(bean: instance, field: 'gradeDetails', 'error')} ">
-
-    <label for="gradeDetails">
-        <g:message code="exercise.gradeDetails.label" default="GradeDetails"/>
-    </label>
-
-    <%-- GRADEDETAILS FIELDS --%>
-    <g:each in="${instance?.gradeDetails ?}" var="graded" status="i">
-        <div>
-            <%-- set the domain reference that it can be mapped by the controller --%>
-            <g:set var="domainReference" value="gradeDetails[${i}]."/>
-            <%-- ajax link to remove entries --%>
-            <g:hiddenField name="gradeDetails[${i}].id" value="${graded?.id}"/>
-            <div class="row">
-                <g:render template="/gradeDetails/form" model="[gradeDetailsInstance: graded]"/>
-                <%-- MINUS GOMB --%>
-                <div class="large-2 columns" style="padding-top: 16px">
-                    <input type="button" class="button small blue radius"
-                           onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'removeGradeDetails', params:[removeIx: i])}')"
-                           value="${message(code: 'default.addNew.label', default: ' - ')}"/>
-
-                </div>
-                <%-- MINUS GOMB --%>
-
-            </div>
-        </div>
-    </g:each>
-    <%-- PLUSS GOMB --%>
-        <%-- ajax link to add new entries --%>
-        <input type="button" rel="nofollow" class="button small blue radius" href="javascript:void(0)"
-               onclick="oneToManyScripts.ajaxPostReplace('${formId}', '${elementToReplace}', '${createLink(action: 'addGradeDetails')}')"
-               value="${message(code: 'default.addNew.label', default: ' + ')}"/>
-        <%-- PLUSS GOMB --%>
-    <%-- GRADEDETAILS FIELDS --%>
-
-<%-- to restore the state of the form after ajax post/response --%>
-    <g:hiddenField name="formId" value="${formId}"/>
-    <g:hiddenField name="elementToReplace" value="${elementToReplace}"/>
-
-</div>
+<g:render template="/exercise/exercise_grade_details" model="[instance: instance]"/>
 <div class="row">
     <div class="small-12 columns">
         <label for="exerciseTitle" class="${hasErrors(bean: instance, field: 'title', 'error')}"><g:message code="exercise.title.label" />:</label>

@@ -16,7 +16,9 @@
     <link rel="stylesheet" href="${resource(dir: 'stylesheets', file: 'app.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'stylesheets', file: 'curriculum.css')}" type="text/css">
     <script src="${resource(dir: 'javascripts/vendor', file: 'custom.modernizr.js')}"></script>
-    <script type="text/javascript" src="${resource(dir: 'js', file: 'oneToManyHelper.js')}"></script>
+    <script src="${resource(dir: 'javascripts/vendor', file: 'jquery.js')}"></script>
+    <script type="text/javascript" src="${resource(dir: 'js', file: 'gapFillExerciseHelper.js')}"></script>
+    <script type="text/javascript" src="${resource(dir: 'js', file: 'jquery.selection.js')}"></script>
     <g:layoutHead/>
     <r:layoutResources/>
 </head>

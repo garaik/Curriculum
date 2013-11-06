@@ -58,7 +58,7 @@ class ExerciseController {
         Exercise instance = lookUpExercise(id)
         switch ( instance ) {
         case MultipleChoiceExercise:    return render(view: "/multipleChoiceExercise/edit", model:  [instance: instance])
-        case GapFillExercise:           return render(view: "/gapFillExercise/edit", model:  [instance: instance])
+        case GapFillExercise:           return render(view: "/gapFillExercise/edit", model:  [instance: instance, editOrCreate: "edit", isSavedText: "true"])
         case PictureMapExercise:        return render(view: "/pictureMapExercise/edit", model:  [instance: instance])
         case PairingExercise:           return render(view: "/pairingExercise/edit", model:  [instance: instance])
         default:
@@ -79,17 +79,14 @@ class ExerciseController {
                 }
             }
 
-             // code change goes here
-            def removeList = elementsToRemoveFromList(params, "gradeDetails", new GradeDetails(), exerciseSavedInstance.gradeDetails)
+             //Remove the unused grade details
+            def removeList = OneToManyUtils.elementsToRemoveFromList(params, "gradeDetails", new GradeDetails(), exerciseSavedInstance.gradeDetails)
             exerciseSavedInstance.gradeDetails.removeAll(removeList)
-            // code change ends here
+
 
             exerciseSavedInstance.properties = params
 
             deleteUnusedSubactivities(exerciseSavedInstance)
-
-            //Call the form validation
-            exerciseSavedInstance.validate()
 
             if (!exerciseSavedInstance.save(flush: true)) {
                 render(view: "edit", model: [instance: exerciseSavedInstance])
@@ -166,7 +163,7 @@ class ExerciseController {
                    exerciseInstance.gradeDetails = []
            ]
            exerciseInstance.gradeDetails << new GradeDetails()
-           render template: "/exercise/exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
+           render template: "/exercise/exercise_grade_details", model: [instance: exerciseInstance]
        }
 
     /**
@@ -176,31 +173,9 @@ class ExerciseController {
     def removeGradeDetails() {
         // remove selected address from the list of addresses
         def exerciseInstance = new Exercise(params)
-        def removeIx = params.removeIx
         List gradeDetailList = exerciseInstance.gradeDetails.toArray()
-        def gradeDetail = gradeDetailList.get(removeIx.toInteger())
+        def gradeDetail = gradeDetailList.get(Integer.parseInt(params.removeGradeDetailIx))
         exerciseInstance.gradeDetails.remove(gradeDetail)
-        render template: "/exercise/exercise_form", model: [instance: exerciseInstance, formId: params.formId, elementToReplace: params.elementToReplace]
-    }
-
-    /**
-     * Returns a list with elements which can be removed from the referencing entity
-     * @param params - the params which include the post parameters
-     * @param domainReference - the domain referenced which we named in the _form.gsp
-     * @param instanceTemplate - the object to select the referenced objects
-     * @param listToRemoveFrom - the list where the deleted/kept/new elements are in
-     * @return a list with elements which can be removed from the referencing entity
-     */
-    def List elementsToRemoveFromList(params, domainReference, instanceTemplate, listToRemoveFrom) {
-        def listParamElement = params["${domainReference}[0]"]
-        def removeList = new ArrayList(listToRemoveFrom)
-        for (int i = 1; listParamElement != null; i++) {
-            log.debug "listParamElement: ${listParamElement}"
-            def instanceElement = instanceTemplate.get(listParamElement.id);
-            log.debug "instanceElement: ${instanceElement}"
-            removeList.remove(instanceElement)
-            listParamElement = params["${domainReference}[${i}]"]
-        }
-        return removeList
+        render template: "/exercise/exercise_grade_details", model: [instance: exerciseInstance]
     }
 }
