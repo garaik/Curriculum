@@ -10,8 +10,6 @@ class Exercise {
 
     String title
     String instruction
-    String mediaDescription
-    String feedback
     String methodologySuggestion
 
     List gradeDetails
@@ -25,8 +23,6 @@ class Exercise {
                        })
         title(blank: false)
         instruction(nullable: true)
-        mediaDescription(nullable: true)
-        feedback(nullable: true)
         methodologySuggestion(nullable: true)
     }
 

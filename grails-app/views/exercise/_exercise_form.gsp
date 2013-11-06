@@ -62,24 +62,6 @@
 </div>
 <div class="row">
     <div class="small-12 columns">
-        <label for="field" class="${hasErrors(bean: instance, field: 'mediaDescription', 'error')}"><g:message code="exercise.mediaDescription.label" />:</label>
-        <textarea name="mediaDescription" id="field" rows="8" class="${hasErrors(bean: instance, field: 'mediaDescription', 'error')}">${instance?.mediaDescription}</textarea>
-        <g:hasErrors bean="${instance}" field="mediaDescription">
-            <small class="error"><g:fieldError bean="${instance}" field="mediaDescription" /></small>
-        </g:hasErrors>
-    </div>
-</div>
-<div class="row">
-    <div class="small-12 columns">
-        <label for="field" class="${hasErrors(bean: instance, field: 'feedback', 'error')}"><g:message code="exercise.feedback.label" />:</label>
-        <textarea name="feedback" id="field" class="${hasErrors(bean: instance, field: 'feedback', 'error')}">${instance?.feedback}</textarea>
-        <g:hasErrors bean="${instance}" field="feedback">
-            <small class="error"><g:fieldError bean="${instance}" field="feedback" /></small>
-        </g:hasErrors>
-    </div>
-</div>
-<div class="row">
-    <div class="small-12 columns">
         <label for="field" class="${hasErrors(bean: instance, field: 'methodologySuggestion', 'error')}"><g:message code="exercise.methodologySuggestion.label" />:</label>
         <textarea name="methodologySuggestion" id="field" class="${hasErrors(bean: instance, field: 'methodologySuggestion', 'error')}">${instance?.methodologySuggestion}</textarea>
         <g:hasErrors bean="${instance}" field="methodologySuggestion">

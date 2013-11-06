@@ -10,9 +10,19 @@ package curriculum
 class Map {
 
     ExerciseType exerciseType
-    Exercise exercise
     Question question
+    List mapItems
 
-    static hasMany = [mapArea: MapArea, mediaItems: MediaItem]
+    static hasMany = [mapAreas: MapArea, mapItems: MapItem]
+    static belongsTo = [exercise: PairingExercise]
+    static constraints = {
+        question(nullable: true)
+    }
+    static mapping = {
+//        exercise cascade: 'delete-orphan'
+//        mapItems cascade: 'save-update'
+        mapItems lazy: false
+        exercise lazy: false
+    }
 }
 

@@ -75,28 +75,6 @@
             </li>
         </g:if>
 
-        <g:if test="${exerciseInstance?.mediaDescription}">
-            <li class="fieldcontain">
-                <span id="mediaDescription-label" class="property-label"><g:message
-                        code="exercise.mediaDescription.label" default="Media Description"/></span>
-
-                <span class="property-value" aria-labelledby="mediaDescription-label"><g:fieldValue
-                        bean="${exerciseInstance}" field="mediaDescription"/></span>
-
-            </li>
-        </g:if>
-
-        <g:if test="${exerciseInstance?.feedback}">
-            <li class="fieldcontain">
-                <span id="feedback-label" class="property-label"><g:message code="exercise.feedback.label"
-                                                                            default="Feedback"/></span>
-
-                <span class="property-value" aria-labelledby="feedback-label"><g:fieldValue bean="${exerciseInstance}"
-                                                                                            field="feedback"/></span>
-
-            </li>
-        </g:if>
-
         <g:if test="${exerciseInstance?.methodologySuggestion}">
             <li class="fieldcontain">
                 <span id="methodologySuggestion-label" class="property-label"><g:message

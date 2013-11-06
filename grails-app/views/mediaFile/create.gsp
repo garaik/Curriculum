@@ -28,6 +28,9 @@
                     <g:else>
                         <g:set var="mediaItemId" value="${mediaFileInstance?.mediaItem?.id}"></g:set>
                     </g:else>
+                    <g:if test="${params.pairingExerciseId}">
+                        <g:hiddenField name="pairingExerciseId" value="${params.pairingExerciseId}"/>
+                    </g:if>
                     <g:link controller="mediaItem" action="edit" params="[id: mediaItemId]" class="button small blue radius">Mégsem</g:link>
                 </div>
             </div>

@@ -91,9 +91,13 @@ class MediaFileController {
             render(view: "create", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
-
-        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-        redirect(controller: "mediaItem", action: "edit", id: mediaFileInstance.mediaItem.id)
+        if (params.pairingExerciseId){
+            flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
+            redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
+        }else{
+            flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
+            redirect(controller: "mediaItem", action: "edit", id: mediaFileInstance.mediaItem.id)
+        }
     }
 
     def show(Long id) {
@@ -183,7 +187,11 @@ class MediaFileController {
             deleteMedia(mediaFileInstance.path)
             mediaFileInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id])
+            if (params.pairingExerciseId){
+                redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
+            }else {
+                redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id])
+            }
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])

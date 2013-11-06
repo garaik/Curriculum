@@ -7,7 +7,13 @@ package curriculum
  */
 class PairingExercise extends Exercise{
 
+    static hasOne = [map: Map]
     static mapping = {
         discriminator("Pairing")
+        map cascade: 'all-delete-orphan'
+        map lazy: false
+    }
+    static constraints = {
+        map(nullable: true)
     }
 }

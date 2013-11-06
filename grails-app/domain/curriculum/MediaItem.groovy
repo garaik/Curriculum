@@ -12,8 +12,8 @@ class MediaItem {
     MediaType mediaType
     String description
 
-    static hasMany = [mediaFiles: MediaFile, exercises: Exercise, answers: Answer, feedbacks: Feedback, maps: Map, mapItems: MapItem, questions: Question]
-    static belongsTo = [Exercise, Answer, Map, MapItem, Question]
+    static hasMany = [mediaFiles: MediaFile, exercises: Exercise, answers: Answer, feedbacks: Feedback, maps: Map, questions: Question]
+    static belongsTo = [Exercise, Answer, Map, MapItem, Question, MapItemGroup]
     static constraints = {
         description(nullable: false, blank: false)
     }

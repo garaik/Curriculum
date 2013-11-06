@@ -21,8 +21,7 @@ class ExerciseController {
             def hits = Exercise.search(pagination.filter, listParams)
             result.instances = hits.results
             result.count = hits.total
-        }
-        else {
+        } else {
             result.instances = Exercise.list(listParams)
             result.count = result.instances.totalCount
         }
@@ -56,13 +55,13 @@ class ExerciseController {
 
     def edit(Long id) {
         Exercise instance = lookUpExercise(id)
-        switch ( instance ) {
-        case MultipleChoiceExercise:    return render(view: "/multipleChoiceExercise/edit", model:  [instance: instance])
-        case GapFillExercise:           return render(view: "/gapFillExercise/edit", model:  [instance: instance])
-        case PictureMapExercise:        return render(view: "/pictureMapExercise/edit", model:  [instance: instance])
-        case PairingExercise:           return render(view: "/pairingExercise/edit", model:  [instance: instance])
-        default:
-         render(view: "edit", model:  [instance: instance])
+        switch (instance) {
+            case MultipleChoiceExercise: return render(view: "/multipleChoiceExercise/edit", model: [instance: instance])
+            case GapFillExercise: return render(view: "/gapFillExercise/edit", model: [instance: instance])
+            case PictureMapExercise: return render(view: "/pictureMapExercise/edit", model: [instance: instance])
+            case PairingExercise: return render(view: "/pairingExercise/edit", model: [instance: instance])
+            default:
+                render(view: "edit", model: [instance: instance])
         }
     }
 
@@ -79,7 +78,7 @@ class ExerciseController {
                 }
             }
 
-             // code change goes here
+            // code change goes here
             def removeList = elementsToRemoveFromList(params, "gradeDetails", new GradeDetails(), exerciseSavedInstance.gradeDetails)
             exerciseSavedInstance.gradeDetails.removeAll(removeList)
             // code change ends here
@@ -148,7 +147,7 @@ class ExerciseController {
      */
     def refreshSubactivityList() {
         def instance = new Exercise()
-        if(!"null".equals(params.activity)){
+        if (!"null".equals(params.activity)) {
             Activity activity = Activity.get(Long.valueOf(params.activity))
             instance.setActivity(activity)
         }
