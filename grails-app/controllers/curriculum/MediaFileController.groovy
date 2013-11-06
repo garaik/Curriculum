@@ -109,14 +109,14 @@ class MediaFileController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-        redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id, questionId: questionId])
+
+
         if (params.pairingExerciseId){
             flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
             redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
         }else{
             flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-            redirect(controller: "mediaItem", action: "edit", id: mediaFileInstance.mediaItem.id)
+            redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id, questionId: questionId])
         }
     }
 

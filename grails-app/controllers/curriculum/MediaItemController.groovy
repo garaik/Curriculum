@@ -66,11 +66,11 @@ class MediaItemController {
             }
         }
 
-        if (!mediaItemInstance.mediaFiles) {
-            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
-            return
-        }
+//        if (!mediaItemInstance.mediaFiles) {
+//            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
+//            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+//            return
+//        }
 
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "create", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
@@ -132,11 +132,11 @@ class MediaItemController {
 
         mediaItemInstance.properties = params
 
-        if (!mediaItemInstance.mediaFiles) {
-            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
-            return
-        }
+//        if (!mediaItemInstance.mediaFiles) {
+//            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
+//            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+//            return
+//        }
 
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
