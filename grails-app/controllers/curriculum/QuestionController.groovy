@@ -6,6 +6,22 @@ class QuestionController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
+    def acceptableVideos
+    def acceptableSounds
+    def acceptableImages
+    def acceptableDocuments
+
+    QuestionController() {
+        init()
+    }
+
+    def init() {
+        acceptableVideos = grailsApplication.metadata['mediaAllowedVideoFormats'].tokenize(',[]')
+        acceptableSounds = grailsApplication.metadata['mediaAllowedAudioFormats'].tokenize(',[]')
+        acceptableImages = grailsApplication.metadata['mediaAllowedImageFormats'].tokenize(',[]')
+        acceptableDocuments = grailsApplication.metadata['mediaAllowedDocumentFormats'].tokenize(',[]')
+    }
+
     def index() {
         redirect(action: "list", params: params)
     }
@@ -45,7 +61,7 @@ class QuestionController {
             return
         }
 
-        [questionInstance: questionInstance]
+        [questionInstance: questionInstance, acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
     def edit(Long id) {
@@ -56,7 +72,7 @@ class QuestionController {
             return
         }
 
-        [questionInstance: questionInstance]
+        [questionInstance: questionInstance, acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
     def update(Long id, Long version) {
@@ -102,7 +118,7 @@ class QuestionController {
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
-            redirect(action: "show", id: id)
+            redirect(controller: "multipleChoiceExercise", action: "edit", id: mceId)
         }
     }
 
@@ -110,6 +126,7 @@ class QuestionController {
         def questionInstance
         if (params.id) {
             questionInstance = Question.get(params.id)
+            questionInstance.properties = params
         }else {
             questionInstance = new Question(params)
             MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
@@ -127,7 +144,6 @@ class QuestionController {
             }
         }
 
-        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.answers) {
                 questionInstance.answers = []
@@ -141,6 +157,7 @@ class QuestionController {
         def questionInstance
         if (params.id) {
             questionInstance = Question.get(params.id)
+            questionInstance.properties = params
         }else {
             questionInstance = new Question(params)
             MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
@@ -157,7 +174,6 @@ class QuestionController {
             }
         }
 
-        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.feedbacks) {
                 questionInstance.feedbacks = []
@@ -170,6 +186,7 @@ class QuestionController {
         def questionInstance
         if (params.id) {
             questionInstance = Question.get(params.id)
+            questionInstance.properties = params
         }else {
             questionInstance = new Question(params)
             MultipleChoiceExercise mce = MultipleChoiceExercise.get(Long.parseLong(params.exerciseId))
@@ -186,7 +203,6 @@ class QuestionController {
             }
         }
 
-        //TODO megoldani, hogy kiolvassa a változtatásokat edit esetben, mert nem figyeli őket
 
         if (questionInstance.save(flush: true)) {
             if (!questionInstance.mediaItems) {

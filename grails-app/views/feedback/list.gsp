@@ -40,7 +40,7 @@
 					
 						<td>${fieldValue(bean: feedbackInstance, field: "description")}</td>
 					
-						<td><g:formatBoolean boolean="${feedbackInstance.systemFeedback}" /></td>
+						<td><g:formatBoolean boolean="${feedbackInstance.systemFeedback}" true="Igen" false="Nem"/></td>
 					
 					</tr>
 				</g:each>

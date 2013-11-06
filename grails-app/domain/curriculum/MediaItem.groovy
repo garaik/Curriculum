@@ -17,6 +17,10 @@ class MediaItem {
     static constraints = {
         description(nullable: false, blank: false)
     }
+    static mapping = {
+        mediaFiles lazy: false
+        mediaFiles cascade: 'save-update'
+    }
 
     @Override
     public java.lang.String toString() {

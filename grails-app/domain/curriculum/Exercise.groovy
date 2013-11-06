@@ -19,8 +19,7 @@ class Exercise {
     static constraints = {
         activity(nullable: false, blank: false    )
         subactivities(nullable: false, blank: false, validator: {
-                	  if (it.empty) return ['entryMissing']
-                       })
+                	  if (it.empty) return ['entryMissing']})
         title(blank: false)
         instruction(nullable: true)
         methodologySuggestion(nullable: true)

@@ -19,7 +19,7 @@ class Question {
 
     static constraints = {
         questionText(nullable: false, blank: false)
-        questionDisplayType(nullable: false)
+        questionDisplayType(nullable: false, blank: false)
         previousAnswers(nullable: true)
         answers(nullable: true)
         mediaItems(nullable: true)

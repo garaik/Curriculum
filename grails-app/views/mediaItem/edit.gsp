@@ -28,7 +28,10 @@
                            <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}" formnovalidate="" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');" />
                         </g:if>
 
-                        <g:link action="show" params="[id: params.id]" class="button small blue radius">Mégsem</g:link>
+                        <g:if test="${questionId}">
+                            <g:link action="show" params="[id: params.id, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
+                        </g:if>
+
 
                     </div>
                 </div>

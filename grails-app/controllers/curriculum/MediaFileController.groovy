@@ -20,6 +20,8 @@ class MediaFileController {
 
     def maxSize
 
+    def questionId
+
     MediaFileController() {
         init()
     }
@@ -35,12 +37,6 @@ class MediaFileController {
         mediaDirImages.mkdirs()
         mediaDirSounds.mkdirs()
         mediaDirDocuments.mkdirs()
-
-        // Getting accessable formats for media uploading from application.properties file
-        acceptableVideos = grailsApplication.metadata['mediaAllowedVideoFormats'].tokenize(',[]')
-        acceptableImages = grailsApplication.metadata['mediaAllowedImageFormats'].tokenize(',[]')
-        acceptableSounds = grailsApplication.metadata['mediaAllowedAudioFormats'].tokenize(',[]')
-        acceptableDocuments = grailsApplication.metadata['mediaAllowedDocumentFormats'].tokenize(',[]')
     }
 
     def index() {
@@ -53,23 +49,30 @@ class MediaFileController {
     }
 
     def create() {
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         if (params?.mediaItemId) {
             def mediaFileInstance = new MediaFile(params)
             mediaFileInstance.setMediaItem(MediaItem.get(Long.parseLong(params.mediaItemId)))
-            [mediaFileInstance: mediaFileInstance]
+            [mediaFileInstance: mediaFileInstance, questionId: questionId]
         }
     }
 
     def save() {
         def mediaFileInstance = new MediaFile(params)
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         MediaItem mediaItem = MediaItem.get(Long.parseLong(params.mediaItemId))
         mediaFileInstance.setMediaItem(mediaItem)
+        setUploadableFiles(mediaFileInstance.getMediaItem().getMediaType())
 
         def file = request.getFile('upload')
 
         if (file?.getSize() > maxSize) {
             flash.message = message(code: 'media.upload.tooLarge', default: "Túl nagy file! A limit ${(maxSize / 1024) / 1024} Mb.")
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance])
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance, questionId: questionId])
             return
         }
 
@@ -77,8 +80,8 @@ class MediaFileController {
         def fileParams = uploadFile(file)
 
         if (fileParams.equals("notSupported")) {
-            flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő fájl formátum! Lehetséges formátumok: ${acceptableVideos} ${acceptableDocuments} ${acceptableSounds} ${acceptableImages}")
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance])
+            flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő fájl formátum! Lehetséges formátumok: ${(acceptableVideos.size() > 0) ? acceptableVideos: ""} ${(acceptableDocuments.size > 0) ? acceptableDocuments: ""} ${(acceptableSounds.size > 0) ? acceptableSounds: ""} ${(acceptableImages.size > 0) ? acceptableImages : ""}")
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance, questionId: questionId])
             return
         }
 
@@ -87,10 +90,27 @@ class MediaFileController {
             mediaFileInstance.extension = fileParams[1]
         }
 
-        if (!mediaFileInstance.save(flush: true)) {
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
+        def hasFinalMediaFile = false
+
+        mediaItem.mediaFiles.each() {
+            if (it.finalVersion) {
+                hasFinalMediaFile = true
+            }
+        }
+
+        if (mediaFileInstance.finalVersion && hasFinalMediaFile) {
+            flash.message = message(code: 'media.upload.finalVersionAlreadyExists', default: "Már létezik végső verzió, egyszerre csak egy média elem lehet végleges!")
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance, questionId: questionId])
             return
         }
+
+        if (!mediaFileInstance.save(flush: true)) {
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
+            return
+        }
+
+        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
+        redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id, questionId: questionId])
         if (params.pairingExerciseId){
             flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
             redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
@@ -101,6 +121,9 @@ class MediaFileController {
     }
 
     def show(Long id) {
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         def mediaFileInstance = MediaFile.get(id)
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
@@ -108,22 +131,31 @@ class MediaFileController {
             return
         }
 
-        [mediaFileInstance: mediaFileInstance]
+        [mediaFileInstance: mediaFileInstance, questionId: questionId]
     }
 
     def edit(Long id) {
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         def mediaFileInstance = MediaFile.get(id)
+        setUploadableFiles(mediaFileInstance.getMediaItem().getMediaType())
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
             redirect(action: "list")
             return
         }
 
-        [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
+        [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId]
     }
 
     def update(Long id, Long version) {
         def mediaFileInstance = MediaFile.get(id)
+        MediaItem mediaItem = MediaItem.get(Long.parseLong(params.mediaItemId))
+        setUploadableFiles(mediaFileInstance.getMediaItem().getMediaType())
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
             redirect(action: "list")
@@ -135,18 +167,33 @@ class MediaFileController {
                 mediaFileInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'mediaFile.label', default: 'Média  fájl - ')] as Object[],
                         " - Egy másik felhasználó módosította a média fájl adatait, amíg Ön szerkesztette!")
-                render(view: "edit", model: [mediaFileInstance: mediaFileInstance])
+                render(view: "edit", model: [mediaFileInstance: mediaFileInstance, questionId: questionId])
                 return
             }
         }
 
-        mediaFileInstance.properties = params
+        ////////////////
+        // Validation //
+        ////////////////
+
+        def hasFinalMediaFile = false
+
+        mediaItem.mediaFiles.each() {
+            if (it?.finalVersion && (it != mediaFileInstance)) {
+                hasFinalMediaFile = true
+            }
+        }
+
+        if (params.finalVersion && hasFinalMediaFile) {
+            flash.message = message(code: 'media.upload.finalVersionAlreadyExists', default: "Már létezik végső verzió, egyszerre csak egy média elem lehet végleges!")
+            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
+            return
+        }
 
         def file = request.getFile('upload')
-
         if (file?.getSize() > maxSize) {
             flash.message = message(code: 'media.upload.tooLarge', default: "Túl nagy file! A limit ${(maxSize / 1024) / 1024} Mb.")
-            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
+            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
             return
         }
 
@@ -154,10 +201,16 @@ class MediaFileController {
         def fileParams = uploadFile(file)
 
         if (fileParams.equals("notSupported")) {
-            flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő file formátum! Lehetséges formátumok: ${acceptableVideos} ${acceptableDocuments} ${acceptableSounds} ${acceptableImages}")
-            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
+            flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő file formátum! Lehetséges formátumok: ${(acceptableVideos.size() > 0) ? acceptableVideos : ""} ${(acceptableDocuments.size > 0) ? acceptableDocuments : ""} ${(acceptableSounds.size > 0) ? acceptableSounds : ""} ${(acceptableImages.size > 0) ? acceptableImages : ""}")
+            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
             return
         }
+
+        /////////////////////
+        // Validation ends //
+        /////////////////////
+
+        mediaFileInstance.properties = params
 
         if (fileParams) {
             deleteMedia(mediaFileInstance.path)
@@ -166,20 +219,23 @@ class MediaFileController {
         }
 
         if (!mediaFileInstance.save(flush: true)) {
-            render(view: "edit", model: [mediaFileInstance: mediaFileInstance])
+            render(view: "edit", model: [mediaFileInstance: mediaFileInstance, questionId: questionId])
             return
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-        redirect(controller: "mediaItem", action: "edit", id: mediaFileInstance.mediaItem.id)
+        redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id, questionId: questionId])
     }
 
     def delete(Long id) {
+        if (params?.questionId) {
+            questionId = params?.questionId
+        }
         def mediaFileInstance = MediaFile.get(id)
         def mediaItemInstance = mediaFileInstance.mediaItem
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(action: "list")
+            redirect(controller: "question", action: "edit", id: questionId)
             return
         }
 
@@ -187,6 +243,7 @@ class MediaFileController {
             deleteMedia(mediaFileInstance.path)
             mediaFileInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
+            redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id, questionId: questionId])
             if (params.pairingExerciseId){
                 redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
             }else {
@@ -195,7 +252,28 @@ class MediaFileController {
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(action: "list")
+            redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id, questionId: questionId])
+        }
+    }
+
+    def setUploadableFiles(mediaType) {
+        acceptableVideos = []
+        acceptableImages = []
+        acceptableSounds = []
+        acceptableDocuments = []
+        switch (mediaType) {
+            case MediaType.VIDEO:
+                acceptableVideos = grailsApplication.metadata['mediaAllowedVideoFormats'].tokenize(',[]')
+                break
+            case MediaType.HANG:
+                acceptableSounds = grailsApplication.metadata['mediaAllowedAudioFormats'].tokenize(',[]')
+                break
+            case MediaType.KEP:
+                acceptableImages = grailsApplication.metadata['mediaAllowedImageFormats'].tokenize(',[]')
+                break
+            case MediaType.DOKUMENTUM:
+                acceptableDocuments = grailsApplication.metadata['mediaAllowedDocumentFormats'].tokenize(',[]')
+                break
         }
     }
 

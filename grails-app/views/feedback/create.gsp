@@ -16,11 +16,9 @@
     <div class="small-12 columns">
         <g:form action="save">
             <g:if test="${params?.questionId}">
-                <g:link controller="question" action="edit" params="[id: params?.questionId]">Kérdés</g:link>
                 <g:hiddenField name="questionId" value="${params?.questionId}"></g:hiddenField>
             </g:if>
             <g:if test="${params?.answerId}">
-                <g:link controller="answer" action="edit" params="[id: params?.answerId]">Válasz</g:link>
                 <g:hiddenField name="answerId" value="${params?.answerId}"></g:hiddenField>
             </g:if>
 

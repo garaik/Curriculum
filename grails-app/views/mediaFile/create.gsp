@@ -32,6 +32,7 @@
                         <g:hiddenField name="pairingExerciseId" value="${params.pairingExerciseId}"/>
                     </g:if>
                     <g:link controller="mediaItem" action="edit" params="[id: mediaItemId]" class="button small blue radius">Mégsem</g:link>
+                    <g:link controller="mediaItem" action="edit" params="[id: mediaItemId, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
                 </div>
             </div>
         </g:uploadForm>
