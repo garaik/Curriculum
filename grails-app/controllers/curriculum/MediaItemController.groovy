@@ -9,7 +9,6 @@ class MediaItemController {
     def acceptableSounds
     def acceptableDocuments
 
-    def questionId
 
     MediaItemController() {
         init()
@@ -33,90 +32,81 @@ class MediaItemController {
     }
 
     def create() {
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
-        [mediaItemInstance: new MediaItem(params), questionId: questionId]
+
+        [mediaItemInstance: new MediaItem(params)]
     }
 
     def save() {
         def mediaItemInstance = new MediaItem(params)
-        if (params?.questionId){
-            def question = Question.get(Long.parseLong(params.questionId))
+        if ("question".equals(params?.returnController)){
+            def question = Question.get(Long.parseLong(params.returnId))
             mediaItemInstance.addToQuestions(question)
             question.addToMediaItems(mediaItemInstance)
-            questionId = params?.questionId
-        }else if (params?.answerId){
-            def answer = Answer.get(Long.parseLong(params.answerId))
+        }else if ("answer".equals(params?.returnController)){
+            def answer = Answer.get(Long.parseLong(params.returnId))
             mediaItemInstance.addToAnswers(answer)
             answer.addToMediaItems(mediaItemInstance)
-        }else if (params?.feedbackId){
-            def feedback = Feedback.get(Long.parseLong(params.feedbackId))
+        }else if ("feedback".equals(params?.returnController)){
+            def feedback = Feedback.get(Long.parseLong(params.returnId))
             mediaItemInstance.addToFeedbacks(feedback)
             feedback.addToMediaItems(mediaItemInstance)
         }
 
         if (!mediaItemInstance.validate()) {
             if (mediaItemInstance.id) {
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
                 return
             } else {
-                render(view: "create", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
                 return
             }
         }
 
         if (!mediaItemInstance.mediaFiles) {
             flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
             return
         }
 
         if (!mediaItemInstance.save(flush: true)) {
-            render(view: "create", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+            render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
             return
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
-        redirect(action: "edit", params: [id: mediaItemInstance.id, questionId: questionId])
+        redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
     }
 
     def show(Long id) {
         def mediaItemInstance = MediaItem.get(id)
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
             redirect(action: "list")
             return
         }
 
-        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId]
+        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos,
+                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def edit(Long id) {
         def mediaItemInstance = MediaItem.get(id)
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(action: "list")
+            redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
             return
         }
 
-        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId]
+        [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos,
+                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
+                returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ]
     }
 
     def update(Long id, Long version) {
         def mediaItemInstance = MediaItem.get(id)
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(action: "list")
+            redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
             return
         }
 
@@ -125,7 +115,7 @@ class MediaItemController {
                 mediaItemInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'mediaItem.label', default: 'Média elem - ')] as Object[],
                         " - Egy másik felhasználó módosította a média elem adatait, amíg Ön szerkesztette!")
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
                 return
             }
         }
@@ -134,48 +124,42 @@ class MediaItemController {
 
         if (!mediaItemInstance.mediaFiles) {
             flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
             return
         }
 
         if (!mediaItemInstance.save(flush: true)) {
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments, questionId: questionId])
+            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds,
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
+                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
             return
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
-        redirect(action: "show", params: [id: mediaItemInstance.id, questionId: questionId])
+        redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
     }
 
     def delete(Long id) {
         def mediaItemInstance = MediaItem.get(id)
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller: "question", action: "edit", id: questionId)
+            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
             return
         }
 
         try {
             mediaItemInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller: "question", action: "edit", id: questionId)
+            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller: "question", action: "edit", id: questionId)
+            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
         }
     }
 
     def addMediaFile(){
         def mediaItemInstance
-
-        if (params?.questionId) {
-            questionId = params?.questionId
-        }
-
         if (params.id) {
             mediaItemInstance = MediaItem.get(params.id)
             mediaItemInstance.properties = params
@@ -185,10 +169,10 @@ class MediaItemController {
 
         if (!mediaItemInstance.validate()) {
             if (mediaItemInstance.id) {
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
                 return
             } else {
-                render(view: "create", model: [mediaItemInstance: mediaItemInstance, questionId: questionId])
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
                 return
             }
         }
@@ -198,7 +182,7 @@ class MediaItemController {
             if (!mediaItemInstance.mediaFiles) {
                 mediaItemInstance.mediaFiles = []
             }
-            redirect(controller: "mediaFile", action: "create", params: [mediaItemId: mediaItemInstance?.id, questionId: questionId])
+            redirect(controller: "mediaFile", action: "create", params: [mediaItemId: mediaItemInstance?.id, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
         }
     }
 }

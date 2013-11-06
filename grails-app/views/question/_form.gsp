@@ -46,9 +46,12 @@
         <label class="${hasErrors(bean: questionInstance, field: 'feedbacks', 'error')}"><g:message code="question.feedbacks.label" default="Visszajelzések"/>:</label>
         <ul style="list-style: none">
             <g:each in="${questionInstance?.feedbacks ?}" var="f">
-                <li><g:link controller="feedback" action="show" id="${f.id}">${f?.description}</g:link></li>
+                <li><g:link controller="feedback" action="edit" params="[returnController: 'question', returnAction: 'edit', returnId: questionInstance?.id ]" id="${f.id}">${f?.description}</g:link></li>
             </g:each>
         </ul>
+        <g:hiddenField name="returnController" value="question"/>
+        <g:hiddenField name="returnAction" value="edit"/>
+        <g:hiddenField name="returnId" value="${questionInstance?.id}"/>
         <g:actionSubmit action="addFeedback" name="addFeedback" class="button small blue radius" value="Új visszajelzés"/>
     </div>
 </div>

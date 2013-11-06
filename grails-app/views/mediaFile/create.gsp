@@ -19,6 +19,11 @@
 
             <g:render template="form"/>
 
+
+            <g:hiddenField name="returnId" value="${params.returnId}"/>
+            <g:hiddenField name="returnAction" value="${params.returnAction}"/>
+            <g:hiddenField name="returnController" value="${params.returnController}"/>
+
             <div class="row">
                 <div class="small-12 columns">
                     <g:submitButton name="create" class="button small blue radius" value="${message(code: 'default.button.create.label', default: 'Létrehozás')}"/>
@@ -28,7 +33,8 @@
                     <g:else>
                         <g:set var="mediaItemId" value="${mediaFileInstance?.mediaItem?.id}"></g:set>
                     </g:else>
-                    <g:link controller="mediaItem" action="edit" params="[id: mediaItemId, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
+                    <g:link controller="mediaItem" action="edit" class="button small blue radius"
+                            params="[id: mediaItemId, returnController: returnController, returnAction: returnAction, returnId: returnId ]">Mégsem</g:link>
                 </div>
             </div>
         </g:uploadForm>

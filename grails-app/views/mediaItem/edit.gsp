@@ -21,6 +21,10 @@
 				<g:hiddenField name="version" value="${mediaItemInstance?.version}" />
 			    <g:render template="form"/>
 
+                <g:hiddenField name="returnId" value="${params.returnId}"/>
+                <g:hiddenField name="returnAction" value="${params.returnAction}"/>
+                <g:hiddenField name="returnController" value="${params.returnController}"/>
+
                 <div class="row">
                     <div class="small-12 columns">
                         <g:actionSubmit class="button small blue radius" action="update" value="${message(code: 'default.button.update.label', default: 'Mentés')}" />
@@ -29,7 +33,7 @@
                         </g:if>
 
                         <g:if test="${questionId}">
-                            <g:link action="show" params="[id: params.id, questionId: questionId]" class="button small blue radius">Mégsem</g:link>
+                            <g:link controller="${params.returnController}" action="${params.returnAction}" params="[id: params.returnId]" class="button small blue radius">Mégsem</g:link>
                         </g:if>
 
 

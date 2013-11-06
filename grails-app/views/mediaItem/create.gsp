@@ -16,20 +16,16 @@
         <div class="small-12 columns">
 			<g:form action="save" >
 
+                <g:hiddenField name="returnId" value="${params.returnId}"/>
+                <g:hiddenField name="returnAction" value="${params.returnAction}"/>
+                <g:hiddenField name="returnController" value="${params.returnController}"/>
+
 		        <g:render template="form"/>
 
                 <div class="row">
                     <div class="small-12 columns">
 					    <g:submitButton name="create" class="button small blue radius" value="${message(code: 'default.button.create.label', default: 'Létrehozás')}" />
-                        <g:if test="${questionId}">
-                            <g:link controller="question" action="edit" params="[id: questionId]" class="button small blue radius">Mégsem</g:link>
-                        </g:if>
-                        <g:if test="${feedbackId}">
-                            <g:link controller="feedback" action="edit" params="[id: feedbackId]" class="button small blue radius">Mégsem</g:link>
-                        </g:if>
-                        <g:if test="${answerId}">
-                            <g:link controller="answer" action="edit" params="[id: answerId]" class="button small blue radius">Mégsem</g:link>
-                        </g:if>
+                        <g:link controller="${params.returnController}" action="${params.returnAction}" params="[id: params.returnId]" class="button small blue radius">Mégsem</g:link>
                     </div>
                 </div>
 			</g:form>

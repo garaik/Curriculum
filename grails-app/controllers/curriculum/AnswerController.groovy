@@ -86,7 +86,8 @@ class AnswerController {
             return
         }
 
-        [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByAnswerId(id), acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
+        [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByAnswerId(id),
+                acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
     def update(Long id, Long version) {
@@ -135,7 +136,7 @@ class AnswerController {
         def answerInstance = Answer.get(id)
         if (!answerInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'answer.label', default: 'Válasz'), id])
-            redirect(controller: "question", action: "edit", id: questionId)
+            redirect(controller: "question", action: "edit", id: answerInstance?.question?.id)
             return
         }
 
@@ -176,7 +177,7 @@ class AnswerController {
             if (!answerInstance.feedbacks) {
                 answerInstance.feedbacks = []
             }
-            redirect(controller: "feedback", action: "create", params: [answerId: answerInstance?.id])
+            redirect(controller: "feedback", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: answerInstance.id])
         }
     }
 
@@ -206,7 +207,7 @@ class AnswerController {
             if (!answerInstance.mediaItems) {
                 answerInstance.mediaItems = []
             }
-            redirect(controller: "mediaItem", action: "create", params: [answerId: answerInstance?.id])
+            redirect(controller: "mediaItem", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: answerInstance.id])
         }
     }
 

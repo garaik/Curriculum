@@ -179,7 +179,7 @@ class QuestionController {
             if (!questionInstance.feedbacks) {
                 questionInstance.feedbacks = []
             }
-            redirect(controller: "feedback", action: "create", params: [questionId: questionInstance?.id])
+            redirect(controller: "feedback", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
         }
     }
 
@@ -196,10 +196,10 @@ class QuestionController {
 
         if (!questionInstance.validate()) {
             if (questionInstance.id) {
-                render(view: "edit", model: [questionInstance: questionInstance])
+                render(view: "edit", model: [questionInstance: questionInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
                 return
             } else {
-                render(view: "create", model: [questionInstance: questionInstance])
+                render(view: "create", model: [questionInstance: questionInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
                 return
             }
         }
@@ -209,7 +209,7 @@ class QuestionController {
             if (!questionInstance.mediaItems) {
                 questionInstance.mediaItems = []
             }
-            redirect(controller: "mediaItem", action: "create", params: [questionId: questionInstance?.id])
+            redirect(controller: "mediaItem", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
         }
     }
 }
