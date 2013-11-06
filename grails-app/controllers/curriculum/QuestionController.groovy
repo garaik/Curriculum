@@ -34,7 +34,8 @@ class QuestionController {
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'question.label', default: 'Kérdés'), questionInstance.id])
-        redirect(action: "show", id: questionInstance.id)
+        redirect(controller: "multipleChoiceExercise", action: "edit", id: questionInstance.exercise.id)
+
     }
 
     def show(Long id) {
