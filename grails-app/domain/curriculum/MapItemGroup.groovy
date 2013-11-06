@@ -9,5 +9,12 @@ package curriculum
  */
 class MapItemGroup {
 
+    MediaItem mediaItem
+
     static hasMany = [mapItems: MapItem]
+
+    static mapping = {
+        mapItems cascade: 'save-update'
+        mediaItem lazy: false
+    }
 }

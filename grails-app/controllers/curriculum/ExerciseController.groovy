@@ -21,8 +21,7 @@ class ExerciseController {
             def hits = Exercise.search(pagination.filter, listParams)
             result.instances = hits.results
             result.count = hits.total
-        }
-        else {
+        } else {
             result.instances = Exercise.list(listParams)
             result.count = result.instances.totalCount
         }
@@ -145,7 +144,7 @@ class ExerciseController {
      */
     def refreshSubactivityList() {
         def instance = new Exercise()
-        if(!"null".equals(params.activity)){
+        if (!"null".equals(params.activity)) {
             Activity activity = Activity.get(Long.valueOf(params.activity))
             instance.setActivity(activity)
         }

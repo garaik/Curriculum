@@ -8,10 +8,25 @@ package curriculum
  * To change this template use File | Settings | File Templates.
  */
 class MapItem{
-    String description
+    String mapItemTitle
     String hoover
+    Map map
+    MediaItem mediaItem
 
-    static hasMany = [mapAreas: MapArea, mediaItems: MediaItem, mapItemGroups: MapItemGroup]
-    static belongsTo = [MapArea, MapItemGroup]
+    static hasMany = [mapAreas: MapArea, mapItemGroups: MapItemGroup]
+    static belongsTo = [MapArea, MapItemGroup, Map]
+    static constraints = {
+        mediaItem(nullable: true)
+    }
+    static mapping = {
+        mediaItem cascade: 'save-update'
+//        mapItemGroups cascade: 'save-update'
+        mediaItem lazy: false
+    }
 
+
+    @Override
+    public java.lang.String toString() {
+        return mapItemTitle
+    }
 }

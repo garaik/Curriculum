@@ -8,5 +8,6 @@ package curriculum
  * To change this template use File | Settings | File Templates.
  */
 enum ExerciseType{
-    //TODO exerciseType
+    PAIRING,
+    GROUPING
 }

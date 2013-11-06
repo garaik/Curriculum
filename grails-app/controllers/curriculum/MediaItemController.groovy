@@ -62,11 +62,11 @@ class MediaItemController {
             }
         }
 
-        if (!mediaItemInstance.mediaFiles) {
-            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
-            return
-        }
+//        if (!mediaItemInstance.mediaFiles) {
+//            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
+//            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
+//            return
+//        }
 
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
@@ -122,11 +122,11 @@ class MediaItemController {
 
         mediaItemInstance.properties = params
 
-        if (!mediaItemInstance.mediaFiles) {
-            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
-            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
-            return
-        }
+//        if (!mediaItemInstance.mediaFiles) {
+//            flash.error = message(code: 'media.item.noFile', default: "Nincs média file csatolva!")
+//            render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+//            return
+//        }
 
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds,
