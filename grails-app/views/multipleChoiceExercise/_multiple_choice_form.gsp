@@ -4,7 +4,7 @@
 
     <ul style="list-style: none">
         <g:each in="${instance?.questions?.sort{it.questionText}}" var="q">
-            <li><g:link controller="question" action="show" id="${q.id}">${q?.questionText}</g:link></li>
+            <li><g:link controller="question" action="edit" id="${q.id}">${q?.questionText}</g:link></li>
         </g:each>
     </ul>
 

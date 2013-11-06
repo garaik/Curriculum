@@ -128,7 +128,7 @@ class AnswerController {
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'answer.label', default: 'Válasz'), answerInstance.id])
-        redirect(action: "show", id: answerInstance.id)
+        redirect(controller:"question", action: "edit", id: answerInstance.question.id)
     }
 
     def delete(Long id) {

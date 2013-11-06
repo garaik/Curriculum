@@ -34,7 +34,7 @@
         <label class="${hasErrors(bean: questionInstance, field: 'answers', 'error')}"><g:message code="question.answers.label" default="Válaszok"/>:</label>
         <ul style="list-style: none">
             <g:each in="${questionInstance?.answers ?}" var="a">
-                <li><g:link controller="answer" action="show" id="${a.id}">${a?.answerText}</g:link></li>
+                <li><g:link controller="answer" action="edit" id="${a.id}">${a?.answerText}</g:link></li>
             </g:each>
         </ul>
         <g:actionSubmit action="addAnswer" name="addAnswer" class="button small blue radius" value="Új válasz"/>
