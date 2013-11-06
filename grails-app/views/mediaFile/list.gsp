@@ -57,8 +57,8 @@
                     </g:if>
                 </td>
                 <td>${fieldValue(bean: mediaFileInstance, field: "extension")}</td>
-                <td><g:formatBoolean boolean="${mediaFileInstance.finalVersion}"/></td>
-                <td><g:formatBoolean boolean="${mediaFileInstance.isIcon}"/></td>
+                <td><g:formatBoolean boolean="${mediaFileInstance.finalVersion}" true="Igen" false="Nem"/></td>
+                <td><g:formatBoolean boolean="${mediaFileInstance.isIcon}" true="Igen" false="Nem"/></td>
                 <td>${fieldValue(bean: mediaFileInstance, field: "path")}</td>
                 <td class="operations">
                     <g:link action="edit" id="${mediaFileInstance.id}" title="Szerkesztés"><i class="icon-pencil">Szerkesztés</i></g:link>

@@ -10,5 +10,6 @@ package curriculum
 enum MediaType {
     VIDEO,
     HANG,
-    KEP
+    KEP,
+    DOKUMENTUM
 }

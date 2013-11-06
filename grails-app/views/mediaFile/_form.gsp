@@ -2,14 +2,13 @@
 
 <g:hiddenField name="mediaItemId" value="${mediaFileInstance?.mediaItem?.id}"></g:hiddenField>
 
-%{-- TODO only one final version can be exist --}%
 <div class="row">
     <div class="small-12 columns">
         <label for="finalVersion" class="${hasErrors(bean: mediaFileInstance, field: 'finalVersion', 'error')}">
             <g:message code="mediaFile.finalVersion.label" default="Végső verzió"/>
 
         </label>
-        <g:checkBox name="finalVersion" value="${mediaFileInstance?.finalVersion}"/>
+        <g:checkBox name="finalVersion" value="${mediaFileInstance?.finalVersion}" true="Igen" false="Nem"/>
     </div>
 </div>
 
@@ -47,16 +46,16 @@
 
             <div class="row" style="margin-bottom: 10px">
                 <div class="small-12 columns">
-                    <g:if test="${acceptableImages.contains(mediaFileInstance.extension)}">
+                    <g:if test="${acceptableImages?.contains(mediaFileInstance.extension)}">
                         <img src="${fieldValue(bean: mediaFileInstance, field: "path")}" width="100%">
                     </g:if>
-                    <g:if test="${acceptableDocuments.contains(mediaFileInstance.extension)}">
+                    <g:if test="${acceptableDocuments?.contains(mediaFileInstance.extension)}">
                         <img src="${createLinkTo(dir: 'images/icons', file: 'document_image.png', absolute: true)}" alt="document_image.png" title="DOCUMENT" width="100px"/>
                     </g:if>
-                    <g:if test="${acceptableVideos.contains(mediaFileInstance.extension)}">
+                    <g:if test="${acceptableVideos?.contains(mediaFileInstance.extension)}">
                         <img src="${createLinkTo(dir: 'images/icons', file: 'video_image.png', absolute: true)}" alt="video_image.png" title="VIDEO" width="100px"/>
                     </g:if>
-                    <g:if test="${acceptableSounds.contains(mediaFileInstance.extension)}">
+                    <g:if test="${acceptableSounds?.contains(mediaFileInstance.extension)}">
                         <img src="${createLinkTo(dir: 'images/icons', file: 'music_image.png', absolute: true)}" alt="music_image.png" title="MUSIC" width="100px"/>
                     </g:if>
                 </div>

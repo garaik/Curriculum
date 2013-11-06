@@ -19,7 +19,9 @@ class MediaFile {
         path nullable: false
         extension nullable: true
     }
-
+    static mapping = {
+        mediaItem cascade: 'save-update'
+    }
 
     @Override
     public java.lang.String toString() {

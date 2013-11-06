@@ -51,6 +51,7 @@ class MultipleChoiceExerciseController extends ExerciseController {
         def multipleChoiceExerciseInstance
         if (params.id) {
             multipleChoiceExerciseInstance = MultipleChoiceExercise.get(params.id)
+            multipleChoiceExerciseInstance.properties = params
         }else {
             multipleChoiceExerciseInstance = new MultipleChoiceExercise(params)
         }
