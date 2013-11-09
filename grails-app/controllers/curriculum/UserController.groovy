@@ -6,6 +6,34 @@ class UserController {
 
     static allowedMethods = [ update: "POST", delete: "POST"]
 
+    def login = {}
+
+    def authenticate = {
+        def user = User.findByLoginAndPassword(params.login, params.password.encodeAsHash())
+        if (user && user.active) {
+            session.user = user
+            redirect(controller: "multipleChoiceExercise", action: "list")
+        } else {
+            flash.message = "Sikertelen belépés, kérem próbálkozzon újra!"
+            flash.error = true
+            redirect(action: "login")
+        }
+    }
+
+    def logout = {
+        session.user = null
+        redirect(action: "login")
+    }
+
+    def beforeInterceptor = [action: this.&auth, except: ["login", "authenticate", "logout"]]
+
+    def auth() {
+        if (!session.user) {
+            redirect(action: "login")
+            return false
+        }
+    }
+
     def index() {
         redirect(action: "list", params: params)
     }
@@ -35,6 +63,7 @@ class UserController {
 
     def save() {
         def i = new User(params)
+        i.password = i.password.encodeAsHash()
         if (!i.save(flush: true)) {
             render(view: "create", model: [instance: i])
             return
@@ -69,7 +98,13 @@ class UserController {
                 }
             }
 
+            def oldPass = i.password
+
             i.properties = params
+
+            if (oldPass != i.password) {
+                i.password = i.password.encodeAsHash()
+            }
 
             if (!i.save(flush: true)) {
                 render(view: "edit", model: [instance: i])

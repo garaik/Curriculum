@@ -5,6 +5,15 @@ package curriculum
 class MultipleChoiceExerciseController extends ExerciseController {
     static allowedMethods = [update: "POST", save: "POST"]
 
+    def beforeInterceptor = [action: this.&auth]
+
+    def auth() {
+        if (!session.user) {
+            redirect(controller: "user", action: "login")
+            return false
+        }
+    }
+
     def index() {
         redirect(action: "list", params: params)
     }
