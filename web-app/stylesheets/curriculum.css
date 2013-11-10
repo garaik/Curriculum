@@ -75,3 +75,9 @@ textarea {
 #gapFillSelectModeDiv{
     height: 1.8em;
 }
+
+.loginPanel {
+    float:right;
+    color: white;
+    margin-right: 10px;
+}

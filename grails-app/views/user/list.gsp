@@ -36,6 +36,7 @@
                         <th><a href="#"><g:message code="user.login.label" /></a></th>
                         <th><a href="#"><i class="icon-sort-by-alphabet"></i> <g:message code="user.name.label" /></a></th>
                         <th><a href="#"><g:message code="user.email.label" /></a></th>
+                        <th><a href="#"><g:message code="user.role.label"/></a></th>
                         <th><a href="#"><g:message code="user.active.label" /></a></th>
                         <th class="operations">Műveletek</th>
                     </tr>
@@ -46,11 +47,10 @@
                             <td><i class="icon-user"></i> ${instance.login}</td>
                             <td>${instance.name}</td>
                             <td>${instance.email}</td>
-                            <td>${instance.active}</td>
+                            <td>${instance.role}</td>
+                            <td><g:formatBoolean boolean="${instance.active}" true="Igen" false="Nem"/></td>
                             <td class="operations">
                                 <g:link action="edit" id="${instance.id}" title="Szerkesztés"><i class="icon-pencil"></i></g:link>
-                                &nbsp;
-                                <g:link action="delete" id="${instance.id}" title="Törlés" onclick="if (!confirm('Biztosan törölni szeretné a(z) ${instance.login} azonosítójú felhasználót?')) return false;"><i class="icon-trash"></i></g:link>
                             </td>
                         </tr>
                     </g:each>
