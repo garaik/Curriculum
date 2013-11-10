@@ -8,6 +8,7 @@
 
 <body>
 <div class="row curriculum">
+    <p>${session.getAttribute("breadCrumbs")}</p>
     <div class="small-12 columns">
         <h3>Visszajelzés szerkesztése</h3>
     </div>
@@ -22,10 +23,6 @@
             <g:hiddenField name="id" value="${feedbackInstance?.id}"/>
             <g:hiddenField name="version" value="${feedbackInstance?.version}"/>
 
-            <g:hiddenField name="returnId" value="${params.returnId}"/>
-            <g:hiddenField name="returnAction" value="${params.returnAction}"/>
-            <g:hiddenField name="returnController" value="${params.returnController}"/>
-
             <g:render template="form"/>
 
             <div class="row">
@@ -35,7 +32,7 @@
                         <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}" formnovalidate=""
                                         onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');"/>
                     </g:if>
-                    <g:link controller="${params.returnController}" action="${ params.returnAction}" params="[id: params.returnId]" class="button small blue radius">Mégsem</g:link>
+                    <g:link action="cancelAfterSave" class="button small blue radius" params="[instandceId: feedbackInstance?.id]">Mégsem</g:link>
                 </div>
             </div>
         </g:form>

@@ -2,11 +2,14 @@
 <div class="small-12 columns">
     <label for="questions" class="${hasErrors(bean: instance, field: 'questions', 'error')}"><g:message code="exercise.questions.label" default="Kérdések"/>:</label>
 
-    <ul style="list-style: none">
+    <table style="list-style: none">
         <g:each in="${instance?.questions?.sort{it.questionText}}" var="q">
-            <li><g:link controller="question" action="edit" id="${q.id}">${q?.questionText}</g:link></li>
+            <tr>
+                <td>${q}</td>
+                <td><g:link class="button small blue radius" controller="question" action="edit" id="${q.id}" >Szerkesztés</g:link>
+            </tr>
         </g:each>
-    </ul>
+    </table>
 
     <g:actionSubmit action="addQuestion" name="addQuestion" class="button small blue radius" value="Új kérdés"/>
 

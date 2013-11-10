@@ -56,13 +56,26 @@ class MultipleChoiceExerciseController extends ExerciseController {
             multipleChoiceExerciseInstance = new MultipleChoiceExercise(params)
         }
         if (multipleChoiceExerciseInstance.save(flush: true)) {
-            if (!multipleChoiceExerciseInstance.questions) {
+            if (multipleChoiceExerciseInstance.questions == null) {
                 multipleChoiceExerciseInstance.questions = []
             }
+
+            NavigationUtils.initialControllerToNavigationList(session,
+                    new ControllerNavigation(controller: "multipleChoiceExercise", action: "edit", id: multipleChoiceExerciseInstance?.id, breadCrumbsText: "Feleletválasztós feladat szerkesztése"))
+
             redirect(controller: "question", action: "create", params: [multipleChoiceExerciseId: multipleChoiceExerciseInstance?.id])
+
         }else {
             render(view: "create", model: [instance: multipleChoiceExerciseInstance])
             return
         }
+    }
+
+    @Override
+    def edit(Long id) {
+        Exercise instance = lookUpExercise(id)
+        NavigationUtils.initialControllerToNavigationList(session,
+                new ControllerNavigation(controller: "multipleChoiceExercise", action: "edit", id: instance?.id, breadCrumbsText: "Feleletválasztós feladat szerkesztése"))
+        return render(view: "edit", model:  [instance: instance])
     }
 }

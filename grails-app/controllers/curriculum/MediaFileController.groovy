@@ -43,14 +43,15 @@ class MediaFileController {
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        [mediaFileInstanceList: MediaFile.list(params), mediaFileInstanceTotal: MediaFile.count(), acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
+        [mediaFileInstanceList: MediaFile.list(params), mediaFileInstanceTotal: MediaFile.count(),
+                acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def create() {
         if (params?.mediaItemId) {
             def mediaFileInstance = new MediaFile(params)
             mediaFileInstance.setMediaItem(MediaItem.get(Long.parseLong(params.mediaItemId)))
-            [mediaFileInstance: mediaFileInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId]
+            [mediaFileInstance: mediaFileInstance]
         }
     }
 
@@ -65,7 +66,7 @@ class MediaFileController {
 
         if (file?.getSize() > maxSize) {
             flash.message = message(code: 'media.upload.tooLarge', default: "Túl nagy file! A limit ${(maxSize / 1024) / 1024} Mb.")
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance])
             return
         }
 
@@ -74,7 +75,7 @@ class MediaFileController {
 
         if (fileParams.equals("notSupported")) {
             flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő fájl formátum! Lehetséges formátumok: ${(acceptableVideos.size() > 0) ? acceptableVideos: ""} ${(acceptableDocuments.size > 0) ? acceptableDocuments: ""} ${(acceptableSounds.size > 0) ? acceptableSounds: ""} ${(acceptableImages.size > 0) ? acceptableImages : ""}")
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance])
             return
         }
 
@@ -93,24 +94,21 @@ class MediaFileController {
 
         if (mediaFileInstance.finalVersion && hasFinalMediaFile) {
             flash.message = message(code: 'media.upload.finalVersionAlreadyExists', default: "Már létezik végső verzió, egyszerre csak egy média elem lehet végleges!")
-            render(view: "create", model: [mediaFileInstance: mediaFileInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            render(view: "create", model: [mediaFileInstance: mediaFileInstance])
             return
         }
 
         if (!mediaFileInstance.save(flush: true)) {
             render(view: "create", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds,
-                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                   returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId
-            ])
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
+
+        flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
         if (params.pairingExerciseId){
-            flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
             redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
         }else{
-            flash.message = message(code: 'default.created.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-            redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaFile", action: "edit", id:  mediaFileInstance?.id)))
         }
     }
 
@@ -123,7 +121,7 @@ class MediaFileController {
             return
         }
 
-        [mediaFileInstance: mediaFileInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId]
+        [mediaFileInstance: mediaFileInstance]
     }
 
     def edit(Long id) {
@@ -136,8 +134,7 @@ class MediaFileController {
         }
 
         [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos,
-                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId]
+                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def update(Long id, Long version) {
@@ -147,7 +144,7 @@ class MediaFileController {
 
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
+            redirect(action: "list")
             return
         }
 
@@ -156,8 +153,7 @@ class MediaFileController {
                 mediaFileInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'mediaFile.label', default: 'Média  fájl - ')] as Object[],
                         " - Egy másik felhasználó módosította a média fájl adatait, amíg Ön szerkesztette!")
-                render(view: "edit", model: [mediaFileInstance: mediaFileInstance,
-                        returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                render(view: "edit", model: [mediaFileInstance: mediaFileInstance])
                 return
             }
         }
@@ -177,8 +173,7 @@ class MediaFileController {
         if (params.finalVersion && hasFinalMediaFile) {
             flash.message = message(code: 'media.upload.finalVersionAlreadyExists', default: "Már létezik végső verzió, egyszerre csak egy média elem lehet végleges!")
             render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds,
-                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
 
@@ -186,8 +181,7 @@ class MediaFileController {
         if (file?.getSize() > maxSize) {
             flash.message = message(code: 'media.upload.tooLarge', default: "Túl nagy file! A limit ${(maxSize / 1024) / 1024} Mb.")
             render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds,
-                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
 
@@ -197,8 +191,7 @@ class MediaFileController {
         if (fileParams.equals("notSupported")) {
             flash.message = message(code: 'media.upload.notSupported', default: "Nem megfelelő file formátum! Lehetséges formátumok: ${(acceptableVideos.size() > 0) ? acceptableVideos : ""} ${(acceptableDocuments.size > 0) ? acceptableDocuments : ""} ${(acceptableSounds.size > 0) ? acceptableSounds : ""} ${(acceptableImages.size > 0) ? acceptableImages : ""}")
             render(view: "edit", model: [mediaFileInstance: mediaFileInstance, acceptableSounds: acceptableSounds,
-                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
 
@@ -215,41 +208,58 @@ class MediaFileController {
         }
 
         if (!mediaFileInstance.save(flush: true)) {
-            render(view: "edit", model: [mediaFileInstance: mediaFileInstance,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            render(view: "edit", model: [mediaFileInstance: mediaFileInstance])
             return
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), mediaFileInstance.id])
-        redirect(controller: "mediaItem", action: "edit", params: [id: mediaFileInstance.mediaItem.id,
-                returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
-    }
+        if (params.pairingExerciseId){
+            redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
+        }else{
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaFile", action: "edit", id:  mediaFileInstance?.id)))
+        }
+}
 
     def delete(Long id) {
         def mediaFileInstance = MediaFile.get(id)
-        def mediaItemInstance = mediaFileInstance.mediaItem
         if (!mediaFileInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
-            return
+            if (params.pairingExerciseId) {
+                redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
+            } else {
+                redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaFile", action: "edit", id: mediaFileInstance?.id)))
+                return
+            }
         }
 
         try {
             deleteMedia(mediaFileInstance.path)
             mediaFileInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            if (params.pairingExerciseId){
+            if (params.pairingExerciseId) {
                 redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
-            }else {
-                redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id,
-                returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
-        }   }
+            } else {
+                redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaFile", action: "edit", id: mediaFileInstance?.id)))
+            }
+        }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaFile.label', default: 'Média  fájl'), id])
-            redirect(controller: "mediaItem", action: "edit", params: [id: mediaItemInstance.id,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            if (params.pairingExerciseId) {
+                redirect(controller: "pairingExercise", action: "edit", id: params.pairingExerciseId)
+            } else {
+                redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaFile", action: "edit", id: mediaFileInstance?.id)))
+            }
         }
+    }
+
+
+    def cancel(){
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, null))
+    }
+
+    def cancelAfterSave(){
+        def i = Question.get(params.instandceId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session,  new ControllerNavigation(controller: "mediaFile", action: "edit", id: i?.id)))
     }
 
     def setUploadableFiles(mediaType) {

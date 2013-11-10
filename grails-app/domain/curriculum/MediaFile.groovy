@@ -20,7 +20,7 @@ class MediaFile {
         extension nullable: true
     }
     static mapping = {
-        mediaItem cascade: 'save-update'
+
     }
 
     @Override

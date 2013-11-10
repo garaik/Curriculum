@@ -36,7 +36,7 @@ class AnswerController {
             def answerInstance = new Answer(params)
             def question = Question.get(params.questionId)
             answerInstance.setQuestion(question)
-            question.answers.add(answerInstance)
+        //    question.answers.add(answerInstance)
             [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByQuestionId(Long.parseLong(params.questionId))]
         }
     }
@@ -45,6 +45,7 @@ class AnswerController {
         def answerInstance = new Answer(params)
         def question = Question.get(params.questionId)
         answerInstance.setQuestion(question)
+        question.answers.add(answerInstance)
         if (params?.nextQuestionId && params?.nextQuestionId != "null"){
             def nextQuestion = Question.get(Long.parseLong(params.nextQuestionId))
             def answerNextQuestion = new AnswerNextQuestion()
@@ -64,7 +65,7 @@ class AnswerController {
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'answer.label', default: 'Válasz'), answerInstance.id])
 
-        redirect(controller: "question", action: "edit", id: answerInstance.question.id)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id:answerInstance?.id)))
     }
 
     def show(Long id) {
@@ -85,6 +86,7 @@ class AnswerController {
             redirect(action: "list")
             return
         }
+        NavigationUtils.addControllerToNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: id, breadCrumbsText: "Válasz szerkesztése"),true)
 
         [answerInstance: answerInstance, nextQuestionList: getNextQuestionListByAnswerId(id),
                 acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
@@ -129,7 +131,7 @@ class AnswerController {
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'answer.label', default: 'Válasz'), answerInstance.id])
-        redirect(controller:"question", action: "edit", id: answerInstance.question.id)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: id)))
     }
 
     def delete(Long id) {
@@ -143,12 +145,21 @@ class AnswerController {
         try {
             answerInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'answer.label', default: 'Válasz'), id])
-            redirect(controller: "question", action: "edit", id: answerInstance?.question?.id)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: id)))
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'answer.label', default: 'Válasz'), id])
-            redirect(controller: "question", action: "edit", id: answerInstance?.question?.id)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: id)))
         }
+    }
+
+    def cancel(){
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, null))
+    }
+
+    def cancelAfterSave(){
+        def i = Answer.get(params.instandceId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session,  new ControllerNavigation(controller: "answer", action: "edit", id: i?.id)))
     }
 
     def addFeedback(){
@@ -174,10 +185,11 @@ class AnswerController {
 
 
         if (answerInstance.save(flush: true)) {
-            if (!answerInstance.feedbacks) {
+            if (answerInstance.feedbacks == null) {
                 answerInstance.feedbacks = []
             }
-            redirect(controller: "feedback", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: answerInstance.id])
+            NavigationUtils.addControllerToNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: answerInstance.id, breadCrumbsText: "Válasz szerkesztése"),false)
+            redirect(controller: "feedback", action: "create")
         }
     }
 
@@ -204,10 +216,11 @@ class AnswerController {
 
 
         if (answerInstance.save(flush: true)) {
-            if (!answerInstance.mediaItems) {
+            if (answerInstance.mediaItems == null) {
                 answerInstance.mediaItems = []
             }
-            redirect(controller: "mediaItem", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: answerInstance.id])
+            NavigationUtils.addControllerToNavigationList(session, new ControllerNavigation(controller: "answer", action: "edit", id: answerInstance.id, breadCrumbsText: "Válasz szerkesztése"),false)
+            redirect(controller: "mediaItem", action: "create")
         }
     }
 

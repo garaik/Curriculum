@@ -25,7 +25,7 @@ class Exercise {
         methodologySuggestion(nullable: true)
     }
 
-    static hasMany = [ gradeDetails : GradeDetails, subactivities : Subactivity]
+    static hasMany = [ gradeDetails : GradeDetails, subactivities : Subactivity, capabilities: Capability ]
 
     static mapping = {
         tablePerHierarchy(false)

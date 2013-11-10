@@ -158,7 +158,7 @@ class ExerciseController {
     def addGradeDetails() {
            // add one address to the list of addresses
            def exerciseInstance = new Exercise(params)
-           if (!exerciseInstance.gradeDetails) [
+           if (exerciseInstance.gradeDetails == null) [
                    exerciseInstance.gradeDetails = []
            ]
            exerciseInstance.gradeDetails << new GradeDetails()

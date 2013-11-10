@@ -50,7 +50,7 @@ class QuestionController {
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'question.label', default: 'Kérdés'), questionInstance.id])
-        redirect(controller: "multipleChoiceExercise", action: "edit", id: questionInstance.exercise.id)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session,new ControllerNavigation(controller: "question", action: "edit", id: questionInstance?.id)))
 
     }
 
@@ -72,7 +72,8 @@ class QuestionController {
             redirect(action: "list")
             return
         }
-
+        NavigationUtils.addControllerToNavigationList(session,
+                new ControllerNavigation(controller: "question", action: "edit", id: id, breadCrumbsText: "Kérdés szerkesztése"),true)
         [questionInstance: questionInstance, acceptableVideos: acceptableVideos, acceptableDocuments: acceptableDocuments, acceptableImages: acceptableImages, acceptableSounds: acceptableSounds]
     }
 
@@ -102,7 +103,7 @@ class QuestionController {
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'question.label', default: 'Kérdés'), questionInstance.id])
-        redirect(controller: "multipleChoiceExercise", action: "edit", id: questionInstance.exercise.id)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "question", action: "edit", id: questionInstance?.id)))
     }
 
     def delete(Long id) {
@@ -119,8 +120,17 @@ class QuestionController {
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'question.label', default: 'Kérdés'), id])
-            redirect(controller: "multipleChoiceExercise", action: "edit", id: mceId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "question", action: "edit", id: questionInstance?.id)))
         }
+    }
+
+    def cancel(){
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, null))
+    }
+
+    def cancelAfterSave(){
+        def i = Question.get(params.instandceId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session,  new ControllerNavigation(controller: "question", action: "edit", id: i?.id)))
     }
 
     def addAnswer(){
@@ -146,9 +156,11 @@ class QuestionController {
         }
 
         if (questionInstance.save(flush: true)) {
-            if (!questionInstance.answers) {
+            if (questionInstance.answers == null) {
                 questionInstance.answers = []
             }
+            NavigationUtils.addControllerToNavigationList(session,
+                    new ControllerNavigation(controller: "question", action: "edit", id: questionInstance.id, breadCrumbsText: "Kérdés szerkesztése"), false)
             redirect(controller: "answer", action: "create", params: [questionId: questionInstance?.id])
         }
 
@@ -176,10 +188,12 @@ class QuestionController {
         }
 
         if (questionInstance.save(flush: true)) {
-            if (!questionInstance.feedbacks) {
+            if (questionInstance.feedbacks == null) {
                 questionInstance.feedbacks = []
             }
-            redirect(controller: "feedback", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
+            NavigationUtils.addControllerToNavigationList(session,
+                    new ControllerNavigation(controller: "question", action: "edit", id: questionInstance.id, breadCrumbsText: "Kérdés szerkesztése"), false)
+            redirect(controller: "feedback", action: "create")
         }
     }
 
@@ -196,20 +210,23 @@ class QuestionController {
 
         if (!questionInstance.validate()) {
             if (questionInstance.id) {
-                render(view: "edit", model: [questionInstance: questionInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
+                render(view: "edit", model: [questionInstance: questionInstance])
                 return
             } else {
-                render(view: "create", model: [questionInstance: questionInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
+                render(view: "create", model: [questionInstance: questionInstance])
                 return
             }
         }
 
 
         if (questionInstance.save(flush: true)) {
-            if (!questionInstance.mediaItems) {
+            if (questionInstance.mediaItems == null) {
                 questionInstance.mediaItems = []
             }
-            redirect(controller: "mediaItem", action: "create", params: [returnController: params.returnController, returnAction: params.returnAction, returnId: questionInstance.id])
+            NavigationUtils.addControllerToNavigationList(session,
+                    new ControllerNavigation(controller: "question", action: "edit", id: questionInstance.id, breadCrumbsText: "Kérdés szerkesztése"), false)
+            redirect(controller: "mediaItem", action: "create")
         }
     }
+
 }

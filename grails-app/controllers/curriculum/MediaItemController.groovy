@@ -38,26 +38,12 @@ class MediaItemController {
 
     def save() {
         def mediaItemInstance = new MediaItem(params)
-        if ("question".equals(params?.returnController)){
-            def question = Question.get(Long.parseLong(params.returnId))
-            mediaItemInstance.addToQuestions(question)
-            question.addToMediaItems(mediaItemInstance)
-        }else if ("answer".equals(params?.returnController)){
-            def answer = Answer.get(Long.parseLong(params.returnId))
-            mediaItemInstance.addToAnswers(answer)
-            answer.addToMediaItems(mediaItemInstance)
-        }else if ("feedback".equals(params?.returnController)){
-            def feedback = Feedback.get(Long.parseLong(params.returnId))
-            mediaItemInstance.addToFeedbacks(feedback)
-            feedback.addToMediaItems(mediaItemInstance)
-        }
-
         if (!mediaItemInstance.validate()) {
             if (mediaItemInstance.id) {
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
                 return
             } else {
-                render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ])
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance])
                 return
             }
         }
@@ -69,19 +55,34 @@ class MediaItemController {
 //        }
 
         if (!mediaItemInstance.save(flush: true)) {
-            render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            render(view: "create", model: [mediaItemInstance: mediaItemInstance])
             return
         }
 
+        HashMap returnPosition = NavigationUtils.getReturnController(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance.id))
+        if ("question".equals(returnPosition.get("controller"))){
+            def question = Question.get(returnPosition.get("id"))
+            mediaItemInstance.addToQuestions(question)
+            question.addToMediaItems(mediaItemInstance)
+        }else if ("answer".equals(returnPosition.get("controller"))){
+            def answer = Answer.get(returnPosition.get("id"))
+            mediaItemInstance.addToAnswers(answer)
+            answer.addToMediaItems(mediaItemInstance)
+        }else if ("feedback".equals(returnPosition.get("controller"))){
+            def feedback = Feedback.get(returnPosition.get("id"))
+            mediaItemInstance.addToFeedbacks(feedback)
+            feedback.addToMediaItems(mediaItemInstance)
+        }
+
         flash.message = message(code: 'default.created.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
-        redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance?.id)))
     }
 
     def show(Long id) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(action: "list")
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", null)))
             return
         }
 
@@ -93,20 +94,20 @@ class MediaItemController {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", null)))
             return
         }
-
+        NavigationUtils.addControllerToNavigationList(session,
+                new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance.id, breadCrumbsText: "Média elem szerkesztése"),true)
         [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds, acceptableVideos: acceptableVideos,
-                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId ]
+                acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments]
     }
 
     def update(Long id, Long version) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", null)))
             return
         }
 
@@ -115,7 +116,7 @@ class MediaItemController {
                 mediaItemInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'mediaItem.label', default: 'Média elem - ')] as Object[],
                         " - Egy másik felhasználó módosította a média elem adatait, amíg Ön szerkesztette!")
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
                 return
             }
         }
@@ -130,32 +131,51 @@ class MediaItemController {
 
         if (!mediaItemInstance.save(flush: true)) {
             render(view: "edit", model: [mediaItemInstance: mediaItemInstance, acceptableSounds: acceptableSounds,
-                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments,
-                    returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                    acceptableVideos: acceptableVideos, acceptableImages: acceptableImages, acceptableDocuments: acceptableDocuments])
             return
         }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), mediaItemInstance.id])
-        redirect(controller: params.returnController, action: params.returnAction, id: params.returnId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance?.id)))
     }
 
     def delete(Long id) {
         def mediaItemInstance = MediaItem.get(id)
         if (!mediaItemInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", null)))
             return
         }
 
         try {
+            HashMap returnPosition = NavigationUtils.getReturnController(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance.id))
+            if ("question".equals(returnPosition.get("controller"))){
+                def question = Question.get(returnPosition.get("id"))
+                mediaItemInstance.removeFromQuestions(question)
+            }else if ("answer".equals(returnPosition.get("controller"))){
+                def answer = Answer.get(returnPosition.get("id"))
+                mediaItemInstance.removeFromAnswers(answer)
+            }else if ("feedback".equals(returnPosition.get("controller"))){
+                def feedback = Feedback.get(returnPosition.get("id"))
+                mediaItemInstance.removeFromFeedbacks(feedback)
+            }
             mediaItemInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance?.id)))
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'mediaItem.label', default: 'Média elem'), id])
-            redirect(controller:  params.returnController, action:  params.returnAction, id: params.returnId)
+            redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance?.id)))
         }
+    }
+
+    def cancel(){
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session, null))
+    }
+
+    def cancelAfterSave(){
+        def i = MediaItem.get(params.instandceId)
+        redirect(NavigationUtils.returnPositionFromControllerNavigationList(session,  new ControllerNavigation(controller: "mediaItem", action: "edit", id: i?.id)))
     }
 
     def addMediaFile(){
@@ -169,20 +189,22 @@ class MediaItemController {
 
         if (!mediaItemInstance.validate()) {
             if (mediaItemInstance.id) {
-                render(view: "edit", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                render(view: "edit", model: [mediaItemInstance: mediaItemInstance])
                 return
             } else {
-                render(view: "create", model: [mediaItemInstance: mediaItemInstance, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+                render(view: "create", model: [mediaItemInstance: mediaItemInstance])
                 return
             }
         }
 
 
         if (mediaItemInstance.save(flush: true)) {
-            if (!mediaItemInstance.mediaFiles) {
+            if (mediaItemInstance.mediaFiles ==  null) {
                 mediaItemInstance.mediaFiles = []
             }
-            redirect(controller: "mediaFile", action: "create", params: [mediaItemId: mediaItemInstance?.id, returnController: params.returnController, returnAction: params.returnAction, returnId: params.returnId])
+            NavigationUtils.addControllerToNavigationList(session,
+                    new ControllerNavigation(controller: "mediaItem", action: "edit", id: mediaItemInstance.id, breadCrumbsText: "Média elem szerkesztése"), false)
+            redirect(controller: "mediaFile", action: "create", params: [mediaItemId: mediaItemInstance?.id])
         }
     }
 }

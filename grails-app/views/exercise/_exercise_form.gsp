@@ -12,6 +12,13 @@
 <div id="exerciseActivities">
     <g:render template="/exercise/exercise_activities" model="['instance':instance]"/>
 </div>
+<div class="fieldcontain ${hasErrors(bean: instance, field: 'capability', 'error')} required">
+    <label for="capabilities">
+        <g:message code="exercise.capabilities.label" default="Capability"/>
+    </label>
+    <g:select id="capabilities" name="capabilities" from="${curriculum.Capability.list()}"  multiple="multiple" optionKey="id" size="5"
+              value="${instance?.capabilities*.id}" class="many-to-many" />
+</div>
 <div class="row">
     <div class="small-12 columns">
         <label for="exerciseInstruction" class="${hasErrors(bean: instance, field: 'instruction', 'error')}"><g:message code="exercise.instruction.label" />:</label>

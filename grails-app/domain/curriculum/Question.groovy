@@ -12,7 +12,6 @@ class Question {
     String questionText
     QuestionDisplayType questionDisplayType
     MultipleChoiceExercise exercise
-    List feedbacks
 
     static belongsTo = [exercise: MultipleChoiceExercise]
     static hasMany = [answers: Answer, mediaItems: MediaItem, feedbacks: Feedback, previousAnswers: AnswerNextQuestion]
@@ -26,9 +25,9 @@ class Question {
         feedbacks(nullable: true)
     }
     static mapping = {
-        answers cascade: 'delete-orphan'
-        feedbacks cascade: 'delete-orphan'
-        exercise cascade: 'save-update'
+//        answers cascade: 'delete-orphan'
+//        feedbacks cascade: 'delete-orphan'
+//        exercise cascade: 'save-update'
         exercise lazy: false
     }
 

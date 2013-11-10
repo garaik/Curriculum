@@ -61,15 +61,6 @@
                         </ul>
                     </div>
                 </section>
-                <section class="${params.controller == 'exercise' ? 'active' : ''}">
-                    <p class="title" data-section-title><a href="${createLink(controller: 'exercise')}"><i class="icon-tasks icon-fixed-width"></i> Feladatok</a></p>
-                    <div class="content" data-section-content>
-                        <ul class="side-nav">
-                            <li><a class="${params.controller == 'exercise' && params.action == 'list' ? 'active' : ''}" href="${createLink(controller: 'exercise', action: 'list')}">Összes feladat</a></li>
-                            <li><a class="${params.controller == 'exercise' && params.action == 'create' ? 'active' : ''}" href="${createLink(controller: 'exercise', action: 'create')}">Új feladat létrehozása</a></li>
-                        </ul>
-                    </div>
-                </section>
                 <section class="${params.controller == 'difficulty' ? 'active' : ''}">
                     <p class="title" data-section-title><a href="${createLink(controller: 'difficulty')}"><i class="icon-tasks icon-fixed-width"></i> Nehézségek</a></p>
                     <div class="content" data-section-content>
@@ -147,7 +138,7 @@
             </div>
         </div>
 
-        <div class="large-9 small-12 columns">
+        <div id="layoutBodyDiv" class="large-9 small-12 columns">
             <g:layoutBody/>
         </div>
     </div>

@@ -7,6 +7,7 @@
 	</head>
 	<body>
     <div class="row curriculum">
+        <p>${session.getAttribute("breadCrumbs")}</p>
         <div class="small-12 columns">
             <h3>Kérdés szerkesztése</h3>
         </div>
@@ -27,7 +28,7 @@
                             <g:actionSubmit class="button small blue radius" action="delete" value="${message(code: 'default.button.delete.label', default: 'Törlés')}"
                                             onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Biztosan törli?')}');"/>
                         </g:if>
-                        <g:link controller="multipleChoiceExercise" action="edit" params="[id: questionInstance.exercise.id]" class="button small blue radius">Mégsem</g:link>
+                        <g:link action="cancelAfterSave" class="button small blue radius" params="[instandceId: questionInstance?.id]">Mégsem</g:link>
                     </div>
                 </div>
             </g:form>

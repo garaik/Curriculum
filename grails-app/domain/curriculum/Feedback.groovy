@@ -13,9 +13,8 @@ class Feedback {
     boolean correct
 
     static hasMany = [ mediaItems: MediaItem, questions: Question, answers: Answer]
-    static belongsTo = [MediaItem, Question, Answer]
+    static belongsTo = [Question, Answer]
     static mapping = {
-        questions cascade: 'delete-orphan'
     }
 
     static constraints = {

@@ -95,7 +95,7 @@ class GapFillExerciseController extends ExerciseController {
             gapFillExerciseStringInstance.setEndPosition(params.positionEndValue.toInteger())
             gapFillExerciseStringInstance.setHiddenString(params.positionTextValue)
 
-            if(!exerciseInstance.gapFillExerciseStrings){
+            if(exerciseInstance.gapFillExerciseStrings == null){
                 exerciseInstance.gapFillExerciseStrings = []
             }
 

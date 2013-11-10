@@ -9,6 +9,7 @@
 
 <body>
 <div class="row curriculum">
+    <p>${session.getAttribute("breadCrumbs")}</p>
     <div class="small-12 columns">
         <h3>Média fájl létrehozása</h3>
     </div>
@@ -18,11 +19,6 @@
         <g:uploadForm action="save" method="post">
 
             <g:render template="form"/>
-
-
-            <g:hiddenField name="returnId" value="${params.returnId}"/>
-            <g:hiddenField name="returnAction" value="${params.returnAction}"/>
-            <g:hiddenField name="returnController" value="${params.returnController}"/>
 
             <div class="row">
                 <div class="small-12 columns">
@@ -36,8 +32,8 @@
                     <g:if test="${params.pairingExerciseId}">
                         <g:hiddenField name="pairingExerciseId" value="${params.pairingExerciseId}"/>
                     </g:if>
-                    <g:link controller="mediaItem" action="edit" class="button small blue radius"
-                            params="[id: mediaItemId, returnController: returnController, returnAction: returnAction, returnId: returnId ]">Mégsem</g:link>
+                    <g:link  action="cancel"  class="button small blue radius">Mégsem</g:link>
+
                 </div>
             </div>
         </g:uploadForm>

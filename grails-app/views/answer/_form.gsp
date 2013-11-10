@@ -51,12 +51,9 @@
         </label>
         <ul style="list-style: none">
             <g:each in="${answerInstance?.feedbacks?}" var="f">
-                <li><g:link controller="feedback" action="edit" params="[returnController: 'answer', returnAction: 'edit', returnId: answerInstance?.id ]" id="${f.id}">${f?.description}</g:link></li>
+                <li><g:link controller="feedback" action="edit" id="${f.id}">${f?.description}</g:link></li>
             </g:each>
         </ul>
-        <g:hiddenField name="returnController" value="answer"/>
-        <g:hiddenField name="returnAction" value="edit"/>
-        <g:hiddenField name="returnId" value="${answerInstance?.id}"/>
         <g:actionSubmit action="addFeedback" name="addFeedback" class="button small blue radius" value="Új visszajelzés"/>
 
     </div>

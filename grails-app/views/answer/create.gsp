@@ -8,6 +8,7 @@
 	</head>
 	<body>
         <div class="row curriculum">
+            <p>${session.getAttribute("breadCrumbs")}</p>
             <div class="small-12 columns">
                 <h3>Válasz létrehozása</h3>
             </div>
@@ -18,7 +19,7 @@
                     <div class="row">
                         <div class="small-12 columns">
                             <g:submitButton name="create" class="button small blue radius" value="${message(code: 'default.button.create.label', default: 'Létrehozás')}" />
-                            <g:link controller="question" action="edit" params="[id: answerInstance.question.id]" class="button small blue radius">Mégsem</g:link>
+                            <g:link  action="cancel"  class="button small blue radius">Mégsem</g:link>
                         </div>
                     </div>
                 </g:form>

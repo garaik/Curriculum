@@ -13,13 +13,13 @@ class MediaItem {
     String description
 
     static hasMany = [mediaFiles: MediaFile, exercises: Exercise, answers: Answer, feedbacks: Feedback, maps: Map, questions: Question]
-    static belongsTo = [Exercise, Answer, Map, MapItem, Question, MapItemGroup]
+    static belongsTo = [Exercise, Answer, Map, MapItem, Question, MapItemGroup, Feedback]
     static constraints = {
         description(nullable: false, blank: false)
     }
     static mapping = {
         mediaFiles lazy: false
-        mediaFiles cascade: 'save-update'
+        mediaFiles cascade: 'all-delete-orphan'
     }
 
     @Override
